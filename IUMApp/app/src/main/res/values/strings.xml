@@ -17,4 +17,9 @@
     <string name="guest_lock_out">Login to unlock all features</string>
     <string name="action_settings">Settings</string>
     <string name="toolbar_sign_out">Logout</string>
+    <string name="day_monday">Lun</string>
+    <string name="day_tuesday">Mar</string>
+    <string name="day_wednesday">Mer</string>
+    <string name="day_thursday">G i o</string>
+    <string name="day_friday">Ven</string>
 </resources>

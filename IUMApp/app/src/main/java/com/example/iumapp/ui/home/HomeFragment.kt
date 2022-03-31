@@ -40,12 +40,10 @@ class HomeFragment : Fragment() {
             }
         }
 
-
-
         homeViewModel.myDataset.observe(viewLifecycleOwner) {
             if ((activity as MainActivity).getUserType() != "guest") {
                 recyclerView.visibility = View.VISIBLE
-                recyclerView.adapter = LessonAdapter((activity as MainActivity).applicationContext, it)
+                recyclerView.adapter = LessonAdapter(it)
             }
         }
 

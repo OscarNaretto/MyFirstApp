@@ -10,15 +10,55 @@
 
     <HorizontalScrollView
         android:id="@+id/days_scroll"
-        android:layout_width="406dp"
-        android:layout_height="118dp"
-        android:layout_marginTop="1dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toTopOf="@+id/lesson_list"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="SpeakableTextPresentCheck" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+
+            <Button
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/day_monday"
+                android:layout_margin="@dimen/activity_horizontal_margin" />
+
+            <Button
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/day_tuesday"
+                android:layout_margin="@dimen/activity_horizontal_margin" />
+
+            <Button
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/day_wednesday"
+                android:layout_margin="@dimen/activity_horizontal_margin" />
+
+            <Button
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/day_thursday"
+                android:layout_margin="@dimen/activity_horizontal_margin" />
+
+            <Button
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/day_friday"
+                android:layout_margin="@dimen/activity_horizontal_margin" />
+        </LinearLayout>
+
+    </HorizontalScrollView>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/lesson_list"
