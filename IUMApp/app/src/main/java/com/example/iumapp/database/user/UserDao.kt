@@ -17,5 +17,8 @@ interface UserDao {
     fun getAll(): List<User>
 
     @Query("DELETE FROM user")
-    fun nukeTable();
+    fun nukeTable()
+
+    @Query("SELECT email FROM user WHERE email = :enteredEmail AND password = :enteredPassword")
+    fun searchValidLoginUser(enteredEmail: String, enteredPassword: String): String
 }

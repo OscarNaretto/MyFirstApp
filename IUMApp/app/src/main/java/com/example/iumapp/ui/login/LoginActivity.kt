@@ -1,6 +1,7 @@
 package com.example.iumapp.ui.login
 
 import android.app.Activity
+import android.content.Intent
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
@@ -12,9 +13,11 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.Toast
+import com.example.iumapp.MainActivity
 import com.example.iumapp.databinding.ActivityLoginBinding
 
 import com.example.iumapp.R
+import com.example.iumapp.database.MyDbFactory
 
 class LoginActivity : AppCompatActivity() {
 
@@ -27,13 +30,15 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        MyDbFactory.initDb(applicationContext)
+
         val username = binding.username
         val password = binding.password
         val login = binding.login
+        val guest = binding.guest
         val loading = binding.loading
 
-        loginViewModel = ViewModelProvider(this, LoginViewModelFactory())
-            .get(LoginViewModel::class.java)
+        loginViewModel = ViewModelProvider(this, LoginViewModelFactory())[LoginViewModel::class.java]
 
         loginViewModel.loginFormState.observe(this@LoginActivity, Observer {
             val loginState = it ?: return@Observer
@@ -60,9 +65,6 @@ class LoginActivity : AppCompatActivity() {
                 updateUiWithUser(loginResult.success)
             }
             setResult(Activity.RESULT_OK)
-
-            //Complete and destroy login activity once successful
-            finish()
         })
 
         username.afterTextChanged {
@@ -96,17 +98,39 @@ class LoginActivity : AppCompatActivity() {
                 loginViewModel.login(username.text.toString(), password.text.toString())
             }
         }
+
+        guest?.setOnClickListener {
+            loading.visibility = View.VISIBLE
+            val intent = Intent(this@LoginActivity, MainActivity::class.java)
+            intent.putExtra("user", "guest")
+            startActivity(intent)
+
+            Toast.makeText(
+                applicationContext,
+                "Feel free to look around, Guest!",
+                Toast.LENGTH_LONG
+            ).show()
+
+            finish()
+        }
     }
 
     private fun updateUiWithUser(model: LoggedInUserView) {
         val welcome = getString(R.string.welcome)
         val displayName = model.displayName
-        // TODO : initiate successful logged in experience
+
+        startActivity(
+            Intent(this, MainActivity::class.java)
+            .putExtra("user", displayName)
+        )
+
         Toast.makeText(
             applicationContext,
             "$welcome $displayName",
             Toast.LENGTH_LONG
         ).show()
+
+        finish()
     }
 
     private fun showLoginFailed(@StringRes errorString: Int) {

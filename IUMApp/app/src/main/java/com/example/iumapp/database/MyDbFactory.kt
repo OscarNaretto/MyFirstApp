@@ -1,14 +1,15 @@
-package com.example.dbtest.database
+package com.example.iumapp.database
 
 import android.content.Context
 
 object MyDbFactory {
     var myDb: MyDb? = null
 
-    fun getMyDbInstance(context: Context): MyDb{
+    fun initDb(context: Context){
         if (myDb == null) {
             myDb = MyDbImpl().getDbInstance(context)
         }
-        return myDb as MyDb
     }
+
+    fun getMyDbInstance(): MyDb { return myDb as MyDb }
 }

@@ -7,4 +7,8 @@ import androidx.room.PrimaryKey
 data class Lesson(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val name: String
-)
+) {
+    override fun toString(): String {
+        return name
+    }
+}

@@ -1,6 +1,7 @@
 package com.example.iumapp.data
 
 import com.example.iumapp.data.model.LoggedInUser
+import com.example.iumapp.database.MyDbFactory
 import java.io.IOException
 
 /**
@@ -10,15 +11,15 @@ class LoginDataSource {
 
     fun login(username: String, password: String): Result<LoggedInUser> {
         try {
-            // TODO: handle loggedInUser authentication
-            val fakeUser = LoggedInUser(java.util.UUID.randomUUID().toString(), "Jane Doe")
-            return Result.Success(fakeUser)
-        } catch (e: Throwable) {
-            return Result.Error(IOException("Error logging in", e))
-        }
-    }
+            val myDb = MyDbFactory.getMyDbInstance()
 
-    fun logout() {
-        // TODO: revoke authentication
+            if(myDb.studentDao().searchValidLoginUser(username, password) != username) {
+                throw IOException("Error logging in")
+            }
+
+            return Result.Success(LoggedInUser("oscar@gmail.com"))
+        } catch (e: Throwable) {
+            return Result.Error(IOException("Invalid credentials", e))
+        }
     }
 }
