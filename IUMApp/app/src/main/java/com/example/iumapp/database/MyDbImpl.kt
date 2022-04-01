@@ -67,19 +67,55 @@ class MyDbImpl {
     private fun populateTeacherInitData(){
         if(myMyDb.teacherDao().getAll().isEmpty()) {
             teacherDao.insert(
-                Teacher("Marco Aldinucci"),
+                Teacher("Rossano Gaeta"),
+                Teacher("Michele Garetto"),
+                Teacher("Maurizio Lucenteforte"),
+                Teacher("Daniele Paolo Radicioni"),
+                Teacher("Claudio Schifanella"),
+
+
                 Teacher("Vivina Laura Barutello"),
+                Teacher("Alberto Boscaggin"),
+                Teacher("Gianluca Garello"),
+                Teacher("Joerg Seiler"),
+                Teacher("Stefano Vita"),
+
                 Teacher("Roberto Aringhieri"),
+                Teacher("Andrea Cesare Grosso"),
+
+
                 Teacher("Andrea Mori"),
+
                 Teacher("Luca Motto Ros"),
+
                 Teacher("Luca Roversi"),
+
                 Teacher("Ciro Cattuto"),
+                Teacher("Liliana Ardissono"),
+
+
                 Teacher("Ugo de' Liguoro"),
+                Teacher("Idilio Drago"),
+                Teacher("Andras Horvath"),
+                Teacher("Diego Magro"),
+                Teacher("Roberto Micalizio"),
+                Teacher("GianLuca Pozzato"),
+
                 Teacher("Ruggero Pensa"),
+                Teacher("Luca Anselma"),
+                Teacher("Noemi Mauro"),
+                Teacher("Fabiana Vernero"),
+
                 Teacher("Marco Pironti"),
+
                 Teacher("Camillo Sacchetto"),
+                Teacher("Fabio Montalcini"),
+
                 Teacher("Igor Pesando"),
+
                 Teacher("Luca Padovani"),
+                Teacher("Jeremy James Sproston"),
+
                 Teacher("Roberta Sirovich")
             )
         }
@@ -109,19 +145,54 @@ class MyDbImpl {
     private fun populateTeachingInitData(){
         if(myMyDb.teachingDao().getAll().isEmpty()) {
             teachingDao.insert(
-                Teaching("Architetture degli Elaboratori", "Marco Aldinucci"),
+                Teaching("Architetture degli Elaboratori", "Idilio Drago"),
+                Teaching("Architetture degli Elaboratori", "Rossano Gaeta"),
+                Teaching("Architetture degli Elaboratori", "Michele Garetto"),
+                Teaching("Architetture degli Elaboratori", "Maurizio Lucenteforte"),
+                Teaching("Architetture degli Elaboratori", "Daniele Paolo Radicioni"),
+                Teaching("Architetture degli Elaboratori", "Claudio Schifanella"),
+
                 Teaching("Analisi Matematica", "Vivina Laura Barutello"),
+                Teaching("Analisi Matematica", "Alberto Boscaggin"),
+                Teaching("Analisi Matematica", "Gianluca Garello"),
+                Teaching("Analisi Matematica", "Joerg Seiler"),
+                Teaching("Analisi Matematica", "Stefano Vita"),
+
                 Teaching("Calcolo matriciale e ricerca operativa", "Roberto Aringhieri"),
+                Teaching("Calcolo matriciale e ricerca operativa", "Andrea Cesare Grosso"),
+
                 Teaching("Matematica discreta", "Andrea Mori"),
+
                 Teaching("Logica", "Luca Motto Ros"),
+
                 Teaching("Programmazione 1", "Luca Roversi"),
+
                 Teaching("Programmazione 2", "Ciro Cattuto"),
+                Teaching("Programmazione 2", "Liliana Ardissono"),
+
+
                 Teaching("Algoritmi e strutture dati", "Ugo de' Liguoro"),
+                Teaching("Algoritmi e strutture dati", "Idilio Drago"),
+                Teaching("Algoritmi e strutture dati", "Andras Horvath"),
+                Teaching("Algoritmi e strutture dati", "Diego Magro"),
+                Teaching("Algoritmi e strutture dati", "Roberto Micalizio"),
+                Teaching("Algoritmi e strutture dati", "GianLuca Pozzato"),
+
                 Teaching("Basi di dati", "Ruggero Pensa"),
+                Teaching("Basi di dati", "Luca Anselma"),
+                Teaching("Basi di dati", "Noemi Mauro"),
+                Teaching("Basi di dati", "Fabiana Vernero"),
+
                 Teaching("Economia", "Marco Pironti"),
+
                 Teaching("Diritto", "Camillo Sacchetto"),
+                Teaching("Diritto", "Fabio Montalcini"),
+
                 Teaching("Fisica", "Igor Pesando"),
+
                 Teaching("Linguaggi formali e traduttori", "Luca Padovani"),
+                Teaching("Linguaggi formali e traduttori", "Jeremy James Sproston"),
+
                 Teaching("Elementi di probabilità e statistica", "Roberta Sirovich")
                 )
         }

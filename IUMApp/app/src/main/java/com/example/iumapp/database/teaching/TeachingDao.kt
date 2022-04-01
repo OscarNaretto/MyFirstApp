@@ -18,4 +18,7 @@ interface TeachingDao {
 
     @Query("DELETE FROM teaching")
     fun nukeTable();
+
+    @Query("SELECT teacher from teaching WHERE lesson = :lessonName")
+    fun getTeacherByLesson(lessonName: String): List<String>
 }

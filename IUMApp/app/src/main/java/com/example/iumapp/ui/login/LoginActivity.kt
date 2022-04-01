@@ -107,7 +107,7 @@ class LoginActivity : AppCompatActivity() {
 
             Toast.makeText(
                 applicationContext,
-                "Feel free to look around, Guest!",
+                R.string.welcome_guest,
                 Toast.LENGTH_LONG
             ).show()
 

@@ -35,6 +35,7 @@ class ReserveLessonFragment : Fragment() {
 
         homeViewModel.text.observe(viewLifecycleOwner) {
             if ((activity as MainActivity).getUserType() == "guest") {
+                binding.daysScroll.visibility = View.GONE
                 textView.visibility = View.VISIBLE
             }
         }

@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.example.iumapp.MainActivity
+import com.example.iumapp.adapter.CatalogueAdapter
 import com.example.iumapp.adapter.LessonAdapter
 import com.example.iumapp.databinding.FragmentCatalogueBinding
 
@@ -32,7 +33,7 @@ class CatalogueFragment: Fragment() {
         val recyclerView: RecyclerView = binding.lessonCatalogue
 
         catalogueViewModel.myDataset.observe(viewLifecycleOwner) {
-            recyclerView.adapter = LessonAdapter(it)
+            recyclerView.adapter = CatalogueAdapter(it)
         }
 
         return root
