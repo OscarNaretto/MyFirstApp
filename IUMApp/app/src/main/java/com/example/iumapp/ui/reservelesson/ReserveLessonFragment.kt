@@ -1,13 +1,11 @@
-package com.example.iumapp.ui.home
+package com.example.iumapp.ui.reservelesson
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.HorizontalScrollView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.example.iumapp.MainActivity
@@ -15,7 +13,7 @@ import com.example.iumapp.adapter.LessonAdapter
 import com.example.iumapp.database.lesson.Lesson
 import com.example.iumapp.databinding.FragmentHomeBinding
 
-class HomeFragment : Fragment() {
+class ReserveLessonFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
 
@@ -28,7 +26,7 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val homeViewModel = ViewModelProvider(this)[HomeViewModel::class.java]
+        val homeViewModel = ViewModelProvider(this)[ReserveLessonViewModel::class.java]
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
 
         val root: View = binding.root
@@ -44,27 +42,38 @@ class HomeFragment : Fragment() {
         homeViewModel.myDataset.observe(viewLifecycleOwner) {
             if ((activity as MainActivity).getUserType() != "guest") {
                 recyclerView.visibility = View.VISIBLE
-                recyclerView.adapter = LessonAdapter(it)
+                recyclerView.adapter = LessonAdapter(getProperLessons("monday"))
             }
         }
 
         binding.monday.setOnClickListener {
-            recyclerView.adapter = LessonAdapter(listOf(Lesson(name = "Architetture")))
+            recyclerView.adapter = LessonAdapter(getProperLessons("monday"))
         }
         binding.tuesday.setOnClickListener {
-            recyclerView.adapter = LessonAdapter(listOf(Lesson(name = "DB")))
+            recyclerView.adapter = LessonAdapter(getProperLessons("tuesday"))
         }
         binding.wednesday.setOnClickListener {
-            recyclerView.adapter = LessonAdapter(listOf(Lesson(name = "SO")))
+            recyclerView.adapter = LessonAdapter(getProperLessons("wednesday"))
         }
         binding.thursday.setOnClickListener {
-            recyclerView.adapter = LessonAdapter(listOf(Lesson(name = "ASD")))
+            recyclerView.adapter = LessonAdapter(getProperLessons("thursday"))
         }
         binding.friday.setOnClickListener {
-            recyclerView.adapter = LessonAdapter(listOf(Lesson(name = "Un cazzo dai, è venerdì")))
+            recyclerView.adapter = LessonAdapter(getProperLessons("friday"))
         }
 
         return root
+    }
+
+    fun getProperLessons(dayName: String): List<Lesson> {
+        //TODO proper query set, in order to return all Lesson obj minus already booked ones
+        return listOf(Lesson(name = when (dayName){
+            "monday"-> "Architetture"
+            "tuesday"-> "DB"
+            "wednesday"-> "SO"
+            "thursday"-> "ASD"
+            else -> "Un cazzo dai, è venerdì"
+        }))
     }
 
     override fun onDestroyView() {
