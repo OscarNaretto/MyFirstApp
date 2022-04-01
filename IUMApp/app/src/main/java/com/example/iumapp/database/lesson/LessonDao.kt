@@ -13,8 +13,8 @@ interface LessonDao {
     @Delete
     fun delete(lesson: Lesson)
 
-    @Query("SELECT * FROM lesson")
-    fun getAll(): List<Lesson>
+    @Query("SELECT name FROM lesson")
+    fun getAll(): List<String>
 
     @Query("DELETE FROM lesson")
     fun nukeTable();

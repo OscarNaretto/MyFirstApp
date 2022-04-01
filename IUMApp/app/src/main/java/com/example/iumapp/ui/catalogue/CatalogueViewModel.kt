@@ -7,11 +7,11 @@ import com.example.iumapp.database.MyDbFactory
 import com.example.iumapp.database.lesson.Lesson
 
 class CatalogueViewModel : ViewModel(){
-    private var _myDataset = MutableLiveData<List<Lesson>>().apply{
+    private var _myDataset = MutableLiveData<List<String>>().apply{
         value = MyDbFactory
             .getMyDbInstance()
             .lessonDao()
             .getAll()
     }
-    val myDataset: LiveData<List<Lesson>> = _myDataset
+    val myDataset: LiveData<List<String>> = _myDataset
 }
