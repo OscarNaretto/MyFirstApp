@@ -7,13 +7,12 @@ import com.example.iumapp.database.MyDbFactory
 import com.example.iumapp.database.lesson.Lesson
 
 class HomeViewModel : ViewModel() {
-
     private val _text = MutableLiveData<String>().apply {
-        value = "This is home Fragment"
+        value = "Login to unlock all features"
     }
     val text: LiveData<String> = _text
 
-    private val _myDataset = MutableLiveData<List<Lesson>>().apply{
+    private var _myDataset = MutableLiveData<List<Lesson>>().apply{
         value = MyDbFactory
             .getMyDbInstance()
             .lessonDao()

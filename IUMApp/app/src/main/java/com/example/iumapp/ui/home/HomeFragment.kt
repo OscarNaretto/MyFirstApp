@@ -7,10 +7,12 @@ import android.view.ViewGroup
 import android.widget.HorizontalScrollView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.example.iumapp.MainActivity
 import com.example.iumapp.adapter.LessonAdapter
+import com.example.iumapp.database.lesson.Lesson
 import com.example.iumapp.databinding.FragmentHomeBinding
 
 class HomeFragment : Fragment() {
@@ -32,7 +34,6 @@ class HomeFragment : Fragment() {
         val root: View = binding.root
         val recyclerView: RecyclerView = binding.lessonList
         val textView: TextView = binding.textHome
-        val horizontalScrollView: HorizontalScrollView = binding.daysScroll
 
         homeViewModel.text.observe(viewLifecycleOwner) {
             if ((activity as MainActivity).getUserType() == "guest") {
@@ -45,6 +46,22 @@ class HomeFragment : Fragment() {
                 recyclerView.visibility = View.VISIBLE
                 recyclerView.adapter = LessonAdapter(it)
             }
+        }
+
+        binding.monday.setOnClickListener {
+            recyclerView.adapter = LessonAdapter(listOf(Lesson(name = "Architetture")))
+        }
+        binding.tuesday.setOnClickListener {
+            recyclerView.adapter = LessonAdapter(listOf(Lesson(name = "DB")))
+        }
+        binding.wednesday.setOnClickListener {
+            recyclerView.adapter = LessonAdapter(listOf(Lesson(name = "SO")))
+        }
+        binding.thursday.setOnClickListener {
+            recyclerView.adapter = LessonAdapter(listOf(Lesson(name = "ASD")))
+        }
+        binding.friday.setOnClickListener {
+            recyclerView.adapter = LessonAdapter(listOf(Lesson(name = "Un cazzo dai, è venerdì")))
         }
 
         return root

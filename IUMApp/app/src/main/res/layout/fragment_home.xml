@@ -23,6 +23,7 @@
             android:layout_height="match_parent">
 
             <Button
+                android:id="@+id/monday"
                 android:layout_width="50dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -30,6 +31,7 @@
                 android:layout_margin="@dimen/activity_horizontal_margin" />
 
             <Button
+                android:id="@+id/tuesday"
                 android:layout_width="50dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -37,6 +39,7 @@
                 android:layout_margin="@dimen/activity_horizontal_margin" />
 
             <Button
+                android:id="@+id/wednesday"
                 android:layout_width="50dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -44,6 +47,7 @@
                 android:layout_margin="@dimen/activity_horizontal_margin" />
 
             <Button
+                android:id="@+id/thursday"
                 android:layout_width="50dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -51,6 +55,7 @@
                 android:layout_margin="@dimen/activity_horizontal_margin" />
 
             <Button
+                android:id="@+id/friday"
                 android:layout_width="50dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
