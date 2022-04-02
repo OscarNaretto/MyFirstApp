@@ -204,5 +204,7 @@ class MyDbImpl {
         userDao.nukeTable()
         teacherDao.nukeTable()
         lessonDao.nukeTable()
+        teachingDao.nukeTable()
+        reservationDao.nukeTable()
     }
 }
