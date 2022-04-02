@@ -9,7 +9,7 @@ import com.example.iumapp.R
 import com.example.iumapp.database.lesson.Lesson
 
 class LessonAdapter(
-    private val dataset: List<Lesson>
+    private val dataset: List<String>
 ): RecyclerView.Adapter<LessonAdapter.LessonViewHolder>()  {
 
     class LessonViewHolder(view: View): RecyclerView.ViewHolder(view) {
@@ -26,7 +26,7 @@ class LessonAdapter(
 
     override fun onBindViewHolder(holder: LessonViewHolder, position: Int) {
         val item = dataset[position]
-        holder.textView.text = item.name
+        holder.textView.text = item
     }
 
     override fun getItemCount() = dataset.size

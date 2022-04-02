@@ -10,15 +10,16 @@
     <androidx.compose.ui.platform.ComposeView
         android:id="@+id/days_scroll"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        tools:ignore="MissingConstraints">
 
     </androidx.compose.ui.platform.ComposeView>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/lesson_list"
-        android:layout_width="408dp"
-        android:layout_height="551dp"
-        android:layout_marginBottom="65dp"
+        android:layout_width="match_parent"
+        android:layout_height="580dp"
+        android:layout_marginBottom="56dp"
         android:scrollbars="vertical"
         android:visibility="gone"
         app:layoutManager="LinearLayoutManager"
