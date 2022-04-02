@@ -198,8 +198,6 @@ class MyDbImpl {
         }
     }
 
-
-
     private fun deleteStudentDb() {
         userDao.nukeTable()
         teacherDao.nukeTable()
