@@ -7,62 +7,12 @@
     tools:context=".ui.reservelesson.ReserveLessonFragment">
 
 
-    <HorizontalScrollView
+    <androidx.compose.ui.platform.ComposeView
         android:id="@+id/days_scroll"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/lesson_list"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="wrap_content">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent">
-
-            <Button
-                android:id="@+id/monday"
-                android:layout_width="@dimen/scroll_button_width"
-                android:layout_height="@dimen/scroll_button_height"
-                android:layout_weight="1"
-                android:text="@string/day_monday"
-                android:layout_margin="@dimen/activity_horizontal_margin" />
-
-            <Button
-                android:id="@+id/tuesday"
-                android:layout_width="@dimen/scroll_button_width"
-                android:layout_height="@dimen/scroll_button_height"
-                android:layout_weight="1"
-                android:text="@string/day_tuesday"
-                android:layout_margin="@dimen/activity_horizontal_margin" />
-
-            <Button
-                android:id="@+id/wednesday"
-                android:layout_width="@dimen/scroll_button_width"
-                android:layout_height="@dimen/scroll_button_height"
-                android:layout_weight="1"
-                android:text="@string/day_wednesday"
-                android:layout_margin="@dimen/activity_horizontal_margin" />
-
-            <Button
-                android:id="@+id/thursday"
-                android:layout_width="@dimen/scroll_button_width"
-                android:layout_height="@dimen/scroll_button_height"
-                android:layout_weight="1"
-                android:text="@string/day_thursday"
-                android:layout_margin="@dimen/activity_horizontal_margin" />
-
-            <Button
-                android:id="@+id/friday"
-                android:layout_width="@dimen/scroll_button_width"
-                android:layout_height="@dimen/scroll_button_height"
-                android:layout_weight="1"
-                android:text="@string/day_friday"
-                android:layout_margin="@dimen/activity_horizontal_margin" />
-        </LinearLayout>
-
-    </HorizontalScrollView>
+    </androidx.compose.ui.platform.ComposeView>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/lesson_list"

@@ -5,6 +5,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material.*
+import androidx.compose.material.SnackbarDefaults.backgroundColor
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.capitalize
+import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
@@ -32,6 +45,7 @@ class ReserveLessonFragment : Fragment() {
         val root: View = binding.root
         val recyclerView: RecyclerView = binding.lessonList
         val textView: TextView = binding.textHome
+        val composeScoller = binding.daysScroll
 
         homeViewModel.text.observe(viewLifecycleOwner) {
             if ((activity as MainActivity).getUserType() == "guest") {
@@ -47,26 +61,46 @@ class ReserveLessonFragment : Fragment() {
             }
         }
 
-        binding.monday.setOnClickListener {
-            recyclerView.adapter = LessonAdapter(getProperLessons("monday"))
-        }
-        binding.tuesday.setOnClickListener {
-            recyclerView.adapter = LessonAdapter(getProperLessons("tuesday"))
-        }
-        binding.wednesday.setOnClickListener {
-            recyclerView.adapter = LessonAdapter(getProperLessons("wednesday"))
-        }
-        binding.thursday.setOnClickListener {
-            recyclerView.adapter = LessonAdapter(getProperLessons("thursday"))
-        }
-        binding.friday.setOnClickListener {
-            recyclerView.adapter = LessonAdapter(getProperLessons("friday"))
+        composeScoller.setContent {
+            ComposeScrollerSet()
         }
 
         return root
     }
 
-    fun getProperLessons(dayName: String): List<Lesson> {
+    @Composable
+    private fun ComposeScrollerSet() {
+        // Smoothly scroll 100px on first composition
+        val state = rememberScrollState()
+        LaunchedEffect(Unit) { state.animateScrollTo(100) }
+
+        Row(
+            modifier = Modifier
+                .horizontalScroll(state)
+                .padding(top = 4.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            for(day in listOf("monday","tuesday","wednesday","thursday","friday")){
+                ProvideButton(dayName = day.capitalize())
+                Spacer(modifier = Modifier.size(10.dp))
+            }
+        }
+    }
+
+    @Composable
+    fun ProvideButton(dayName: String){
+        ExtendedFloatingActionButton(
+            onClick = { dayButtonOnClick(dayName) },
+            text = { Text(dayName) },
+            backgroundColor = MaterialTheme.colors.primary,
+        )
+    }
+
+    private fun dayButtonOnClick(dayName: String){
+        binding.lessonList.adapter = LessonAdapter(getProperLessons(dayName))
+    }
+
+    private fun getProperLessons(dayName: String): List<Lesson> {
         //TODO proper query set, in order to return all Lesson obj minus already booked ones
         return listOf(Lesson(name = when (dayName){
             "monday"-> "Architetture"
