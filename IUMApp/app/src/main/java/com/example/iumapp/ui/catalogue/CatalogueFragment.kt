@@ -43,26 +43,26 @@ class CatalogueFragment : Fragment() {
     ): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                Greetings()
+                SetLessonList()
             }
         }
     }
 
     @Composable
-    private fun Greetings(lessons: List<String> = MyDbFactory
+    private fun SetLessonList(lessons: List<String> = MyDbFactory
                                       .getMyDbInstance()
                                       .lessonDao()
                                       .getAll())
     {
         LazyColumn(modifier = Modifier.padding(top = 4.dp, bottom = 56.dp)) {
             items(items = lessons) { lessons ->
-                Greeting(name = lessons)
+                SetLessonItem(name = lessons)
             }
         }
     }
 
     @Composable
-    private fun Greeting(name: String) {
+    private fun SetLessonItem(name: String) {
         Card(
             backgroundColor = MaterialTheme.colors.primary,
             modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp),

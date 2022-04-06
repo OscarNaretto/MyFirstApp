@@ -12,11 +12,5 @@ class ReserveLessonViewModel : ViewModel() {
     }
     val text: LiveData<String> = _text
 
-    private var _myDataset = MutableLiveData<List<String>>().apply{
-        value = MyDbFactory
-            .getMyDbInstance()
-            .lessonDao()
-            .getAll()
-    }
-    val myDataset: LiveData<List<String>> = _myDataset
+
 }

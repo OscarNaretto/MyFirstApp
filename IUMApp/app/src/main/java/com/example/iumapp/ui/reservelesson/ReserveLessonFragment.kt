@@ -7,25 +7,27 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.RecyclerView
 import com.example.iumapp.MainActivity
-import com.example.iumapp.R
-import com.example.iumapp.adapter.LessonAdapter
 import com.example.iumapp.database.MyDbFactory
 import com.example.iumapp.databinding.FragmentHomeBinding
-import com.example.iumapp.ui.teacherchoice.TeacherChoiceFragment
 
 class ReserveLessonFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
+    private var lessonList = mutableListOf<String>()
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -40,7 +42,7 @@ class ReserveLessonFragment : Fragment() {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
 
         val root: View = binding.root
-        val recyclerView: RecyclerView = binding.lessonList
+        val recyclerView = binding.lessonList
         val textView: TextView = binding.textHome
         val composeScoller = binding.daysScroll
 
@@ -48,13 +50,8 @@ class ReserveLessonFragment : Fragment() {
             if ((activity as MainActivity).getUserType() == "guest") {
                 binding.daysScroll.visibility = View.GONE
                 textView.visibility = View.VISIBLE
-            }
-        }
-
-        homeViewModel.myDataset.observe(viewLifecycleOwner) {
-            if ((activity as MainActivity).getUserType() != "guest") {
+            } else {
                 recyclerView.visibility = View.VISIBLE
-                dayButtonOnClick()
             }
         }
 
@@ -62,7 +59,26 @@ class ReserveLessonFragment : Fragment() {
             ComposeScrollerSet()
         }
 
+        lessonList = MyDbFactory
+            .getMyDbInstance()
+            .reservationDao()
+            .provideAvailableLessons(
+                MyDbFactory.getMyDbInstance(),
+                "monday",
+                1,
+                "attiva"
+            ).toMutableStateList()
+
+        recyclerView.setContent {
+            SetLessonList(lessonList as SnapshotStateList<String>)
+        }
+
         return root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     @Composable
@@ -75,7 +91,7 @@ class ReserveLessonFragment : Fragment() {
                 .padding(vertical = 20.dp, horizontal = 8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            for(day in listOf("monday","tuesday","wednesday","thursday","friday")){
+            for (day in listOf("monday", "tuesday", "wednesday", "thursday", "friday")) {
                 ProvideButton(dayName = day)
                 Spacer(modifier = Modifier.size(10.dp))
             }
@@ -83,7 +99,7 @@ class ReserveLessonFragment : Fragment() {
     }
 
     @Composable
-    fun ProvideButton(dayName: String){
+    fun ProvideButton(dayName: String) {
         ExtendedFloatingActionButton(
             onClick = { dayButtonOnClick(dayName) },
             text = { Text(dayName.capitalize()) },
@@ -91,21 +107,65 @@ class ReserveLessonFragment : Fragment() {
         )
     }
 
-    private fun dayButtonOnClick(dayName: String = "monday"){
-        binding.lessonList.adapter = LessonAdapter(MyDbFactory
+    private fun dayButtonOnClickTest(dayName: String = "monday"){
+        lessonList.clear()
+        lessonList.addAll(listOf (when (dayName) {
+            "monday" -> "Monkeyflip"
+            "tuesday" -> "Chill"
+            "thursday" -> "Sleep"
+            "wednesday" -> "Eat"
+
+            else -> "Sleep"
+        }))
+    }
+
+    private fun dayButtonOnClick(dayName: String){
+        lessonList.clear()
+        lessonList.addAll(MyDbFactory
             .getMyDbInstance()
             .reservationDao()
             .provideAvailableLessons(
                 MyDbFactory.getMyDbInstance(),
                 dayName,
-                15,
+                1,
                 "attiva"
-            ))
+            )
+        )
     }
 
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    @Composable
+    fun SetLessonList(lessons: SnapshotStateList<String>) {
+        LazyColumn(modifier = Modifier.padding(vertical = 6.dp)) {
+            items(items = lessons) { lessons ->
+                SetLessonItem(name = lessons)
+            }
+        }
     }
+
+    @Composable
+    private fun SetLessonItem(name: String) {
+        Card(
+            backgroundColor = MaterialTheme.colors.primary,
+            modifier = Modifier
+                .padding(vertical = 4.dp, horizontal = 8.dp)
+                .fillMaxWidth(),
+            shape = RoundedCornerShape(30.dp),
+        ) {
+            CardContent(name)
+        }
+    }
+
+    @Composable
+    private fun CardContent(name: String) {
+        Text(
+            modifier = Modifier
+                .padding(12.dp)
+                .width(IntrinsicSize.Max),
+            text = name,
+            style = MaterialTheme.typography.h6.copy(
+                fontWeight = FontWeight.ExtraBold
+            )
+        )
+    }
+
 }
