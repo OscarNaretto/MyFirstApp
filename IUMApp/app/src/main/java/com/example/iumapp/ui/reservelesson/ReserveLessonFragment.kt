@@ -17,9 +17,11 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.example.iumapp.MainActivity
+import com.example.iumapp.R
 import com.example.iumapp.adapter.LessonAdapter
 import com.example.iumapp.database.MyDbFactory
 import com.example.iumapp.databinding.FragmentHomeBinding
+import com.example.iumapp.ui.teacherchoice.TeacherChoiceFragment
 
 class ReserveLessonFragment : Fragment() {
 
@@ -100,6 +102,7 @@ class ReserveLessonFragment : Fragment() {
                 "attiva"
             ))
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

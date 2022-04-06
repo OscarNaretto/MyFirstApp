@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.iumapp.R
-import com.example.iumapp.database.lesson.Lesson
 
 class LessonAdapter(
     private val dataset: List<String>
