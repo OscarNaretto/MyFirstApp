@@ -1,5 +1,6 @@
 package com.example.iumapp.ui.reservelesson
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -23,6 +24,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.iumapp.MainActivity
 import com.example.iumapp.database.MyDbFactory
 import com.example.iumapp.databinding.FragmentHomeBinding
+import com.example.iumapp.ui.teacherchoice.TeacherChoice
+import com.example.iumapp.ui.teacherchoice.ui.theme.IUMAppTheme
 
 class ReserveLessonFragment : Fragment() {
 
@@ -44,7 +47,7 @@ class ReserveLessonFragment : Fragment() {
         val root: View = binding.root
         val recyclerView = binding.lessonList
         val textView: TextView = binding.textHome
-        val composeScoller = binding.daysScroll
+        val daysScroller = binding.daysScroll
 
         homeViewModel.text.observe(viewLifecycleOwner) {
             if ((activity as MainActivity).getUserType() == "guest") {
@@ -55,9 +58,7 @@ class ReserveLessonFragment : Fragment() {
             }
         }
 
-        composeScoller.setContent {
-            ComposeScrollerSet()
-        }
+
 
         lessonList = MyDbFactory
             .getMyDbInstance()
@@ -69,8 +70,17 @@ class ReserveLessonFragment : Fragment() {
                 "attiva"
             ).toMutableStateList()
 
+
+        daysScroller.setContent {
+            IUMAppTheme {
+                ComposeScrollerSet()
+            }
+        }
+
         recyclerView.setContent {
-            SetLessonList(lessonList as SnapshotStateList<String>)
+            IUMAppTheme {
+                SetLessonList(lessonList as SnapshotStateList<String>)
+            }
         }
 
         return root
@@ -137,21 +147,23 @@ class ReserveLessonFragment : Fragment() {
     fun SetLessonList(lessons: SnapshotStateList<String>) {
         LazyColumn(modifier = Modifier.padding(vertical = 6.dp)) {
             items(items = lessons) { lessons ->
-                SetLessonItem(name = lessons)
+                SetLessonItem(lessonName = lessons)
             }
         }
     }
 
+    @OptIn(ExperimentalMaterialApi::class)
     @Composable
-    private fun SetLessonItem(name: String) {
+    private fun SetLessonItem(lessonName: String) {
         Card(
             backgroundColor = MaterialTheme.colors.primary,
             modifier = Modifier
                 .padding(vertical = 4.dp, horizontal = 8.dp)
                 .fillMaxWidth(),
             shape = RoundedCornerShape(30.dp),
+            onClick = { launchTeacherChoiceFragment(lessonName) }
         ) {
-            CardContent(name)
+            CardContent(lessonName)
         }
     }
 
@@ -166,6 +178,24 @@ class ReserveLessonFragment : Fragment() {
                 fontWeight = FontWeight.ExtraBold
             )
         )
+    }
+
+    private fun launchTeacherChoiceFragment(lessonName: String){
+        /*activity
+            ?.supportFragmentManager
+            ?.beginTransaction()
+            ?.replace(R.id.nav_host_fragment_activity_main, TeacherChoiceFragment(), "findThisFragment")
+            ?.addToBackStack(null)
+            ?.commit()*/
+
+        startActivity(
+            Intent(activity as MainActivity, TeacherChoice::class.java)
+                .putExtra("lesson", lessonName)
+        )
+
+
+
+
     }
 
 }

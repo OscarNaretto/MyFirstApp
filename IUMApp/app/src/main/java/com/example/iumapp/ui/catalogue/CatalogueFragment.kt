@@ -34,6 +34,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.iumapp.R
 import com.example.iumapp.database.MyDbFactory
+import com.example.iumapp.ui.teacherchoice.ui.theme.IUMAppTheme
 
 class CatalogueFragment : Fragment() {
 
@@ -43,7 +44,9 @@ class CatalogueFragment : Fragment() {
     ): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                SetLessonList()
+                IUMAppTheme {
+                    SetLessonList()
+                }
             }
         }
     }

@@ -10,6 +10,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.IUMApp">
         <activity
+            android:name=".ui.teacherchoice.TeacherChoice"
+            android:exported="false"
+            android:label="@string/title_activity_teacher_choice"
+            android:theme="@style/Theme.IUMApp"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
+        <activity
             android:name=".MainActivity"
             android:exported="false"
             android:label="@string/title_activity_main"

@@ -10,6 +10,11 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.iumapp.MainActivity
 import com.example.iumapp.databinding.FragmentReservationsBinding
 
+//TODO -> set column to contain:
+// collapsed CardView for each reservation (only name showing, everything else collapsed; delete reservation button collapsed)
+// logout button (maybe in Row with username? just better than nothing)
+// opt: separate old reservation already "used" from new ones
+
 class ReservationsFragment : Fragment() {
 
     private var _binding: FragmentReservationsBinding? = null
