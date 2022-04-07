@@ -31,7 +31,7 @@ class MyDbImpl {
             .build()
         setDao()
 
-        deleteStudentDb()
+        dbCleanup()
         populateStudentInitData()
         populateLessonInitData()
         populateTeacherInitData()
@@ -198,7 +198,7 @@ class MyDbImpl {
         }
     }
 
-    private fun deleteStudentDb() {
+    private fun dbCleanup() {
         userDao.nukeTable()
         teacherDao.nukeTable()
         lessonDao.nukeTable()

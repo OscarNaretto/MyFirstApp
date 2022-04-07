@@ -9,7 +9,6 @@ data class Reservation(
     val lesson: String,
     val teacher: String,
     val user: String,
-    val status: String,
     val day: String,
     val time_slot: Int
 )

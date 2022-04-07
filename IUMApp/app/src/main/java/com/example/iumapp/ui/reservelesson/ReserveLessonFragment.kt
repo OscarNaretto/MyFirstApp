@@ -25,7 +25,6 @@ import com.example.iumapp.MainActivity
 import com.example.iumapp.database.MyDbFactory
 import com.example.iumapp.databinding.FragmentHomeBinding
 import com.example.iumapp.ui.teacherchoice.TeacherChoice
-import com.example.iumapp.ui.teacherchoice.ui.theme.IUMAppTheme
 
 class ReserveLessonFragment : Fragment() {
 
@@ -63,21 +62,17 @@ class ReserveLessonFragment : Fragment() {
             .reservationDao()
             .provideAvailableLessons(
                 MyDbFactory.getMyDbInstance(),
-                "monday",
-                1,
-                "attiva"
+                "Lunedì",
+                1
             ).toMutableStateList()
 
         daysScroller.setContent {
-            IUMAppTheme {
-                ComposeScrollerSet()
-            }
+            ComposeScrollerSet()
+
         }
 
         recyclerView.setContent {
-            IUMAppTheme {
-                SetLessonList(lessonList as SnapshotStateList<String>)
-            }
+            SetLessonList(lessonList as SnapshotStateList<String>)
         }
 
         return root
@@ -97,7 +92,7 @@ class ReserveLessonFragment : Fragment() {
                 .padding(vertical = 20.dp, horizontal = 8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            for (day in listOf("monday", "tuesday", "wednesday", "thursday", "friday")) {
+            for (day in listOf("Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì")) {
                 ProvideButton(dayName = day)
                 Spacer(modifier = Modifier.size(10.dp))
             }
@@ -113,18 +108,6 @@ class ReserveLessonFragment : Fragment() {
         )
     }
 
-    private fun dayButtonOnClickTest(dayName: String = "monday"){
-        lessonList.clear()
-        lessonList.addAll(listOf (when (dayName) {
-            "monday" -> "Monkeyflip"
-            "tuesday" -> "Chill"
-            "thursday" -> "Sleep"
-            "wednesday" -> "Eat"
-
-            else -> "Sleep"
-        }))
-    }
-
     private fun dayButtonOnClick(dayName: String){
         lessonList.clear()
         lessonList.addAll(MyDbFactory
@@ -133,8 +116,7 @@ class ReserveLessonFragment : Fragment() {
             .provideAvailableLessons(
                 MyDbFactory.getMyDbInstance(),
                 dayName,
-                1,
-                "attiva"
+                1
             )
         )
     }

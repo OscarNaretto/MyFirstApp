@@ -3,6 +3,7 @@ package com.example.iumapp.ui.teacherchoice
 import android.content.Context
 import android.content.ContextWrapper
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.animateContentSize
@@ -28,28 +29,23 @@ import androidx.compose.ui.unit.dp
 import com.example.iumapp.R
 import com.example.iumapp.database.MyDbFactory
 import com.example.iumapp.database.reservation.Reservation
-import com.example.iumapp.ui.teacherchoice.ui.theme.IUMAppTheme
 
 
-//TODO -> set column to contain:
-// lesson name
-// lesson description (TBD)
-// time slot
-// teacher checklist (pretty cool, choose one at least -> constrain)
-// confirm button
-// cancel button (go back to main)
+//TODO
+// lesson description in relations !! (TBD)
+// pass correct arguments for Reservation
+// extract verbose code (onClicks for example) for better readability
 
 class TeacherChoice : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         val lessonName = intent.getStringExtra("lesson").toString()
-        val timeSlot = intent.getIntExtra("time_slot", 2)
+        val timeSlot = intent.getIntExtra("time_slot", 1)
 
         setContent {
-            IUMAppTheme {
-                SetContainer(lessonName, timeSlot)
-            }
+            SetContainer(lessonName, timeSlot)
+
         }
     }
 }
@@ -67,6 +63,15 @@ fun SetContainer(lessonName: String, timeSlot: Int){
         .getMyDbInstance()
         .teachingDao()
         .getTeacherByLesson(lessonName)
+        .toMutableList()
+
+    for (teacher in MyDbFactory
+        .getMyDbInstance()
+        .reservationDao()
+        .getUnavailableTeacher(lessonName, "Lunedì", timeSlot)
+    ){
+        teachers.remove(teacher)
+    }
 
     val chosenTeacher = remember { mutableStateOf("")}
 
@@ -123,18 +128,51 @@ fun SetContainer(lessonName: String, timeSlot: Int){
                     backgroundColor = MaterialTheme.colors.primary,
                     modifier = Modifier.padding(start = 50.dp, end = 20.dp),
                     onClick = {
-                        MyDbFactory
-                            .getMyDbInstance()
-                            .reservationDao()
-                            .insert(Reservation(
-                                lesson = lessonName,
-                                teacher = chosenTeacher.value,
-                                user = "oscar@gmail.com",
-                                status = "attiva",
-                                day = "friday",
-                                time_slot = timeSlot
-                            ))
-                        context.getActivity()?.finish()
+                        Toast.makeText(
+                            context,
+                            "Prenotazione annullata!",
+                            Toast.LENGTH_SHORT
+                        ).show()
+
+                        context.getActivity()?.finish() },
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Filled.Delete,
+                            contentDescription = "Delete reservation"
+                        )
+                    },
+                    text = {
+                        Text(text = "Annulla")
+                    }
+                )
+
+                ExtendedFloatingActionButton(
+                    backgroundColor = MaterialTheme.colors.primary,
+                    onClick = {
+                        if (chosenTeacher.value != ""){
+                            MyDbFactory
+                                .getMyDbInstance()
+                                .reservationDao()
+                                .insert(Reservation(
+                                    lesson = lessonName,
+                                    teacher = chosenTeacher.value,
+                                    user = "oscar@gmail.com",
+                                    day = "Lunedì", //TODO pass correct values!
+                                    time_slot = timeSlot
+                                ))
+                            Toast.makeText(
+                                context,
+                                "Prenotazione salvata!",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            context.getActivity()?.finish()
+                        } else {
+                            Toast.makeText(
+                                context,
+                                "Nessun docente selezionato",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     },
                     icon = {
                         Icon(
@@ -144,20 +182,6 @@ fun SetContainer(lessonName: String, timeSlot: Int){
                     },
                     text = {
                         Text(text = "Conferma")
-                    }
-                )
-
-                ExtendedFloatingActionButton(
-                    backgroundColor = MaterialTheme.colors.primary,
-                    onClick = { context.getActivity()?.finish() },
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Filled.Delete,
-                            contentDescription = "Delete reservation"
-                        )
-                    },
-                    text = {
-                        Text(text = "Annulla")
                     }
                 )
             }
@@ -251,7 +275,6 @@ fun ComposeScrollerSet(teachers: List<String>, chosenTeacher: MutableState<Strin
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
-    IUMAppTheme {
-        SetContainer("Algoritmi e strutture dati", 1)
-    }
+    SetContainer("Algoritmi e strutture dati", 1)
+
 }

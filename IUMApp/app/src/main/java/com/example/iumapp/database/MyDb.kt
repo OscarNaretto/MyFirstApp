@@ -13,7 +13,7 @@ import com.example.iumapp.database.teaching.TeachingDao
 import com.example.iumapp.database.user.User
 import com.example.iumapp.database.user.UserDao
 
-@Database(entities = [User::class, Teacher::class, Lesson::class, Teaching::class, Reservation::class], version = 7)
+@Database(entities = [User::class, Teacher::class, Lesson::class, Teaching::class, Reservation::class], version = 8)
 abstract class MyDb: RoomDatabase() {
     abstract fun studentDao(): UserDao
     abstract fun teacherDao(): TeacherDao

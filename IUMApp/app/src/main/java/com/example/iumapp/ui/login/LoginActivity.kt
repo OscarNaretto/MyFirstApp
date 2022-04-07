@@ -108,7 +108,7 @@ class LoginActivity : AppCompatActivity() {
             Toast.makeText(
                 applicationContext,
                 R.string.welcome_guest,
-                Toast.LENGTH_LONG
+                Toast.LENGTH_SHORT
             ).show()
 
             finish()
@@ -127,7 +127,7 @@ class LoginActivity : AppCompatActivity() {
         Toast.makeText(
             applicationContext,
             "$welcome $displayName",
-            Toast.LENGTH_LONG
+            Toast.LENGTH_SHORT
         ).show()
 
         finish()

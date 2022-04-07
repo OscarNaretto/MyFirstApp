@@ -6,8 +6,19 @@
     android:layout_height="match_parent"
     tools:context=".ui.myreservations.ReservationsFragment">
 
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/reservation_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical"
+        app:layoutManager="LinearLayoutManager"
+        android:visibility="gone"
+        tools:ignore="MissingConstraints">
+
+    </androidx.compose.ui.platform.ComposeView>
+
     <TextView
-        android:id="@+id/text_dashboard"
+        android:id="@+id/text_my_reservation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
