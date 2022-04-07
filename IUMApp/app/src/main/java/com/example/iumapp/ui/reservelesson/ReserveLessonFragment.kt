@@ -58,8 +58,6 @@ class ReserveLessonFragment : Fragment() {
             }
         }
 
-
-
         lessonList = MyDbFactory
             .getMyDbInstance()
             .reservationDao()
@@ -69,7 +67,6 @@ class ReserveLessonFragment : Fragment() {
                 1,
                 "attiva"
             ).toMutableStateList()
-
 
         daysScroller.setContent {
             IUMAppTheme {
@@ -94,7 +91,6 @@ class ReserveLessonFragment : Fragment() {
     @Composable
     private fun ComposeScrollerSet() {
         val state = rememberScrollState()
-
         Row(
             modifier = Modifier
                 .horizontalScroll(state)
@@ -181,21 +177,10 @@ class ReserveLessonFragment : Fragment() {
     }
 
     private fun launchTeacherChoiceFragment(lessonName: String){
-        /*activity
-            ?.supportFragmentManager
-            ?.beginTransaction()
-            ?.replace(R.id.nav_host_fragment_activity_main, TeacherChoiceFragment(), "findThisFragment")
-            ?.addToBackStack(null)
-            ?.commit()*/
-
         startActivity(
             Intent(activity as MainActivity, TeacherChoice::class.java)
                 .putExtra("lesson", lessonName)
+                .putExtra("time_slot", 1)
         )
-
-
-
-
     }
-
 }
