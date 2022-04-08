@@ -30,7 +30,6 @@ import com.example.iumapp.R
 import com.example.iumapp.database.MyDbFactory
 import com.example.iumapp.database.reservation.Reservation
 
-
 //TODO
 // lesson description in relations !! (TBD)
 // pass correct arguments for Reservation
@@ -45,7 +44,6 @@ class TeacherChoice : ComponentActivity() {
 
         setContent {
             SetContainer(lessonName, timeSlot)
-
         }
     }
 }
@@ -276,5 +274,4 @@ fun ComposeScrollerSet(teachers: List<String>, chosenTeacher: MutableState<Strin
 @Composable
 fun DefaultPreview() {
     SetContainer("Algoritmi e strutture dati", 1)
-
 }

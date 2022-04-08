@@ -29,7 +29,6 @@ interface ReservationDao {
     @Query("SELECT * FROM reservation WHERE user = :userName")
     fun provideReservationByUser(userName: String): List<Reservation>
 
-    //TODO solve logic problem here. lesson with no teachers are still showing
     fun provideAvailableLessons(myDb: MyDb,
                                 day: String,
                                 time_slot: Int): List<String>
@@ -37,7 +36,17 @@ interface ReservationDao {
         val lessonList = myDb.lessonDao().getAll()
         val resList: MutableList<String> = mutableListOf()
 
-        lessonList.forEach { if (provideAvailableTeachers(myDb, it, day, time_slot).isNotEmpty()) resList.add(it) }
+        for(lesson in lessonList){
+            if (provideAvailableTeachers(
+                    myDb,
+                    lesson,
+                    day,
+                    time_slot
+                ).isNotEmpty()
+            ){
+                resList.add(lesson)
+            }
+        }
 
         return resList
     }

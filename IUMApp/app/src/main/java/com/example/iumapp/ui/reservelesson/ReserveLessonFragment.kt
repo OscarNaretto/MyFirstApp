@@ -17,6 +17,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
@@ -30,6 +31,8 @@ class ReserveLessonFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private var lessonList = mutableListOf<String>()
+    lateinit var recyclerView: ComposeView
+
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -44,7 +47,7 @@ class ReserveLessonFragment : Fragment() {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
 
         val root: View = binding.root
-        val recyclerView = binding.lessonList
+        recyclerView = binding.lessonList
         val textView: TextView = binding.textHome
         val daysScroller = binding.daysScroll
 
@@ -76,6 +79,22 @@ class ReserveLessonFragment : Fragment() {
         }
 
         return root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        lessonList = MyDbFactory
+            .getMyDbInstance()
+            .reservationDao()
+            .provideAvailableLessons(
+                MyDbFactory.getMyDbInstance(),
+                "Lunedì",
+                1
+            ).toMutableStateList()
+
+        recyclerView.setContent {
+            SetLessonList(lessonList as SnapshotStateList<String>)
+        }
     }
 
     override fun onDestroyView() {
