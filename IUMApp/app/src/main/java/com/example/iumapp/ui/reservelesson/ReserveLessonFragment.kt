@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshots.SnapshotStateList
@@ -23,8 +22,12 @@ import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.iumapp.MainActivity
+import com.example.iumapp.database.MyDb
 import com.example.iumapp.database.MyDbFactory
 import com.example.iumapp.databinding.FragmentHomeBinding
+import com.example.iumapp.ui.components.MyClickableCard
+import com.example.iumapp.ui.components.StyledButton
+import com.example.iumapp.ui.components.TitleText
 import com.example.iumapp.ui.teacherchoice.TeacherChoice
 
 class ReserveLessonFragment : Fragment() {
@@ -32,6 +35,8 @@ class ReserveLessonFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private var lessonList = mutableListOf<String>()
     lateinit var recyclerView: ComposeView
+    lateinit var myDb: MyDb
+    private var currentDay: String = "Lunedì"
 
 
     // This property is only valid between onCreateView and
@@ -50,6 +55,7 @@ class ReserveLessonFragment : Fragment() {
         recyclerView = binding.lessonList
         val textView: TextView = binding.textHome
         val daysScroller = binding.daysScroll
+        myDb = MyDbFactory.getMyDbInstance()
 
         homeViewModel.text.observe(viewLifecycleOwner) {
             if ((activity as MainActivity).getUserType() == "guest") {
@@ -60,18 +66,16 @@ class ReserveLessonFragment : Fragment() {
             }
         }
 
-        lessonList = MyDbFactory
-            .getMyDbInstance()
+        lessonList = myDb
             .reservationDao()
             .provideAvailableLessons(
-                MyDbFactory.getMyDbInstance(),
-                "Lunedì",
+                myDb,
+                currentDay,
                 1
             ).toMutableStateList()
 
         daysScroller.setContent {
             ComposeScrollerSet()
-
         }
 
         recyclerView.setContent {
@@ -83,12 +87,11 @@ class ReserveLessonFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        lessonList = MyDbFactory
-            .getMyDbInstance()
+        lessonList = myDb
             .reservationDao()
             .provideAvailableLessons(
-                MyDbFactory.getMyDbInstance(),
-                "Lunedì",
+                myDb,
+                currentDay,
                 1
             ).toMutableStateList()
 
@@ -120,20 +123,20 @@ class ReserveLessonFragment : Fragment() {
 
     @Composable
     fun ProvideButton(dayName: String) {
-        ExtendedFloatingActionButton(
-            onClick = { dayButtonOnClick(dayName) },
-            text = { Text(dayName.capitalize()) },
-            backgroundColor = MaterialTheme.colors.primary,
+        StyledButton(
+            { dayButtonOnClick(dayName) },
+            dayName.capitalize()
         )
+
     }
 
     private fun dayButtonOnClick(dayName: String){
+        currentDay = dayName
         lessonList.clear()
-        lessonList.addAll(MyDbFactory
-            .getMyDbInstance()
+        lessonList.addAll(myDb
             .reservationDao()
             .provideAvailableLessons(
-                MyDbFactory.getMyDbInstance(),
+                myDb,
                 dayName,
                 1
             )
@@ -152,28 +155,17 @@ class ReserveLessonFragment : Fragment() {
     @OptIn(ExperimentalMaterialApi::class)
     @Composable
     private fun SetLessonItem(lessonName: String) {
-        Card(
-            backgroundColor = MaterialTheme.colors.primary,
-            modifier = Modifier
-                .padding(vertical = 4.dp, horizontal = 8.dp)
-                .fillMaxWidth(),
-            shape = RoundedCornerShape(30.dp),
-            onClick = { launchTeacherChoiceFragment(lessonName) }
-        ) {
-            CardContent(lessonName)
-        }
+        MyClickableCard(
+            CardContent = { CardContent(lessonName) },
+            onClickAction = { launchTeacherChoiceFragment(lessonName) }
+        )
     }
 
     @Composable
     private fun CardContent(name: String) {
-        Text(
-            modifier = Modifier
-                .padding(12.dp)
-                .width(IntrinsicSize.Max),
-            text = name,
-            style = MaterialTheme.typography.h6.copy(
-                fontWeight = FontWeight.ExtraBold
-            )
+        TitleText(
+            textVal = name,
+            fontWeight = FontWeight.ExtraBold
         )
     }
 
@@ -181,6 +173,8 @@ class ReserveLessonFragment : Fragment() {
         startActivity(
             Intent(activity as MainActivity, TeacherChoice::class.java)
                 .putExtra("lesson", lessonName)
+                .putExtra("user", (activity as MainActivity).getUserType())
+                .putExtra("day", currentDay)
                 .putExtra("time_slot", 1)
         )
     }

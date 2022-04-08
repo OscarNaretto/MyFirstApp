@@ -5,30 +5,37 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ExpandLess
+import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.outlined.Delete
-import androidx.compose.runtime.Composable
+import androidx.compose.material.icons.outlined.Done
+import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshots.SnapshotStateList
-import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.iumapp.MainActivity
+import com.example.iumapp.R
 import com.example.iumapp.database.MyDbFactory
 import com.example.iumapp.database.reservation.Reservation
 import com.example.iumapp.databinding.FragmentReservationsBinding
+import com.example.iumapp.ui.components.MyCard
+import com.example.iumapp.ui.components.StyledIconButton
+import com.example.iumapp.ui.components.TitleText
 
 //TODO -> set column to contain:
 // collapsed CardView for each reservation (only name showing, everything else collapsed; delete reservation button collapsed)
@@ -90,33 +97,43 @@ class ReservationsFragment : Fragment() {
 
 @Composable
 fun ComposeReservationsList(reservationList: SnapshotStateList<Reservation>) {
-    Column {
-        Row {
-            Text(
-                text = "Benvenuto \n $userType !",
-                style = MaterialTheme.typography.h6.copy(
-                    fontWeight = FontWeight.ExtraBold
-                ),
-                modifier = Modifier.padding(bottom = 15.dp)
-            )
-            Button(
-                onClick = { /*TODO*/ },
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Logout,
-                    contentDescription = "Logout"
-                )
-                Text(text = "LOGOUT")
-            }
-        }
-        Text(
-            text = "Le tue prenotazioni:",
-            style = MaterialTheme.typography.h6.copy(
+    Column(
+        modifier = Modifier.padding(bottom = 56.dp)
+    ) {
+        Row(
+            modifier = Modifier.padding(vertical = 8.dp, horizontal = 8.dp),
+            horizontalArrangement = Arrangement.spacedBy(30.dp)
+
+        ){
+            TitleText(
+                textVal = "Benvenuto \n$userType !",
                 fontWeight = FontWeight.ExtraBold
-            ),
-            modifier = Modifier.padding(bottom = 15.dp)
+            )
+
+            ExtendedFloatingActionButton(
+                modifier = Modifier.padding(vertical = 12.dp, horizontal = 8.dp),
+                onClick = { /*TODO launch intent to login activity*/ },
+                text = {
+                    Text(
+                        text = "Logout",
+                    )
+                },
+                backgroundColor = MaterialTheme.colors.primary,
+                icon = {
+                    Icon(
+                        imageVector = Icons.Filled.Logout,
+                        contentDescription = "Logout",
+                    )
+                }
+            )
+        }
+
+        TitleText(
+            textVal = "Le tue prenotazioni:",
+            fontWeight = FontWeight.ExtraBold
         )
-        LazyColumn(modifier = Modifier.padding(top = 4.dp, bottom = 56.dp)) {
+
+        LazyColumn {
             items(items = reservationList) { reservationList ->
                 SetReservationCard(reservation = reservationList)
             }
@@ -126,62 +143,86 @@ fun ComposeReservationsList(reservationList: SnapshotStateList<Reservation>) {
 
 @Composable
 fun SetReservationCard(reservation: Reservation){
-    Card(
-        shape = RoundedCornerShape(30.dp),
-        modifier = Modifier.padding(top = 10.dp, start = 8.dp, end = 8.dp),
-        backgroundColor = Color.White,
-        elevation = 20.dp
+    MyCard(
+        backgroundColor = Color.White
     ) {
-        Column {
-            Text(
-                text = reservation.lesson,
-                style = MaterialTheme.typography.h6.copy(
-                    fontWeight = FontWeight.ExtraBold
-                ),
-                modifier = Modifier.padding(vertical = 15.dp, horizontal = 8.dp)
-            )
+        CardContent(reservation)
+    }
+}
 
-            Text(
-                text = "Il giorno ${reservation.day}, turno ${reservation.time_slot}",
-                style = MaterialTheme.typography.h6.copy(
-                    fontWeight = FontWeight.ExtraBold
-                ),
-                modifier = Modifier.padding(bottom = 15.dp)
-            )
-
-            Text(
-                text = "Docente: ${reservation.teacher}",
-                style = MaterialTheme.typography.h6.copy(
-                    fontWeight = FontWeight.ExtraBold
-                ),
-                modifier = Modifier.padding(bottom = 15.dp)
-            )
-
-            Row {
-                ExtendedFloatingActionButton(
-                    backgroundColor = Color.Red,
-                    modifier = Modifier.padding(start = 50.dp, end = 20.dp),
-                    onClick = {
+@Composable
+fun CardContent(reservation: Reservation){
+    var expanded by remember { mutableStateOf(false) }
+    Column {
+        Row (
+            modifier = Modifier
+                .padding(12.dp)
+                .animateContentSize(
+                    animationSpec = spring(
+                        dampingRatio = Spring.DampingRatioMediumBouncy,
+                        stiffness = Spring.StiffnessLow
+                    )
+                )
+        ){
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(vertical = 15.dp, horizontal = 8.dp)
+            ) {
+                TitleText(reservation.lesson +
+                        "\n${reservation.day}," +
+                        " alle ${when(reservation.time_slot){
+                            1 -> "15:00"
+                            2 -> "16:00"
+                            3 -> "17:00"
+                            else -> "18:00"
+                        }}",
+                    FontWeight.ExtraBold)
+                if (expanded) {
+                    TitleText("Docente: ${reservation.teacher}" +
+                            "\nStato prenotazione: Attiva", //TODO implement correct status showing
+                        FontWeight.ExtraBold)
+                }
+            }
+            IconButton(onClick = { expanded = !expanded }) {
+                Icon(
+                    imageVector = if (expanded) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
+                    contentDescription = if (expanded) {
+                        stringResource(R.string.show_less)
+                    } else {
+                        stringResource(R.string.show_more)
+                    }
+                )
+            }
+        }
+        if(expanded){
+            Row (
+                modifier = Modifier.padding(start = 40.dp, bottom = 10.dp),
+                horizontalArrangement = Arrangement.spacedBy(20.dp)
+            ){
+                StyledIconButton(
+                    {
                         MyDbFactory
                             .getMyDbInstance()
                             .reservationDao()
                             .delete(reservation)
-
                         reservationList.remove(reservation)
-
                     },
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Outlined.Delete,
-                            contentDescription = "Delete reservation"
-                        )
+                    "Cancella",
+                    Color.White,
+                    Color.Red,
+                    Icons.Outlined.Delete,
+                    "Delete reservation"
+                )
+                StyledIconButton(
+                    {
+                        //TODO archivia - effettuata
                     },
-                    text = {
-                        Text(
-                            text = "Cancella",
-                            color = Color.White
-                        )
-                    }
+                    "Effettuata",
+                    Color.White,
+                    Color.Green,
+                    Icons.Outlined.Done,
+                    "Mark as done"
                 )
             }
         }
