@@ -1,5 +1,7 @@
 package com.example.iumapp.ui.myreservations
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -26,6 +28,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat.startActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.iumapp.MainActivity
@@ -36,14 +39,15 @@ import com.example.iumapp.databinding.FragmentReservationsBinding
 import com.example.iumapp.ui.components.MyCard
 import com.example.iumapp.ui.components.StyledIconButton
 import com.example.iumapp.ui.components.TitleText
-
-//TODO -> set column to contain:
-// collapsed CardView for each reservation (only name showing, everything else collapsed; delete reservation button collapsed)
-// logout button (maybe in Row with username? just better than nothing)
-// opt: separate old reservation already "used" from new ones -> label is easy
+import com.example.iumapp.ui.login.LoginActivity
+import com.example.iumapp.ui.teacherchoice.TeacherChoice
+import com.example.iumapp.ui.teacherchoice.getActivity
+import com.example.iumapp.ui.teacherchoice.myDb
+import java.security.AccessController.getContext
 
 private lateinit var userType: String
 private var reservationList = mutableListOf<Reservation>()
+lateinit var saveContext: Context
 
 class ReservationsFragment : Fragment() {
 
@@ -89,6 +93,11 @@ class ReservationsFragment : Fragment() {
         return root
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        saveContext = context
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -101,18 +110,25 @@ fun ComposeReservationsList(reservationList: SnapshotStateList<Reservation>) {
         modifier = Modifier.padding(bottom = 56.dp)
     ) {
         Row(
-            modifier = Modifier.padding(vertical = 8.dp, horizontal = 8.dp),
-            horizontalArrangement = Arrangement.spacedBy(30.dp)
+            modifier = Modifier.padding(vertical = 8.dp),
+            horizontalArrangement = Arrangement.spacedBy(40.dp)
 
         ){
             TitleText(
-                textVal = "Benvenuto \n$userType !",
+                textVal = "Benvenuto \n$userType",
                 fontWeight = FontWeight.ExtraBold
             )
 
             ExtendedFloatingActionButton(
                 modifier = Modifier.padding(vertical = 12.dp, horizontal = 8.dp),
-                onClick = { /*TODO launch intent to login activity*/ },
+                onClick = {
+                    startActivity(
+                        saveContext,
+                        Intent(saveContext, LoginActivity::class.java),
+                        null
+                    )
+                    saveContext.getActivity()?.finish()
+                },
                 text = {
                     Text(
                         text = "Logout",
@@ -153,13 +169,15 @@ fun SetReservationCard(reservation: Reservation){
 @Composable
 fun CardContent(reservation: Reservation){
     var expanded by remember { mutableStateOf(false) }
+    val reservationState = remember { mutableStateOf(reservation.status)}
+
     Column {
         Row (
             modifier = Modifier
                 .padding(12.dp)
                 .animateContentSize(
                     animationSpec = spring(
-                        dampingRatio = Spring.DampingRatioMediumBouncy,
+                        dampingRatio = Spring.DampingRatioLowBouncy,
                         stiffness = Spring.StiffnessLow
                     )
                 )
@@ -172,15 +190,15 @@ fun CardContent(reservation: Reservation){
                 TitleText(reservation.lesson +
                         "\n${reservation.day}," +
                         " alle ${when(reservation.time_slot){
-                            1 -> "15:00"
-                            2 -> "16:00"
-                            3 -> "17:00"
+                            15 -> "15:00"
+                            16-> "16:00"
+                            17 -> "17:00"
                             else -> "18:00"
                         }}",
                     FontWeight.ExtraBold)
                 if (expanded) {
                     TitleText("Docente: ${reservation.teacher}" +
-                            "\nStato prenotazione: Attiva", //TODO implement correct status showing
+                            "\n\nStato: ${reservationState.value}",
                         FontWeight.ExtraBold)
                 }
             }
@@ -197,32 +215,35 @@ fun CardContent(reservation: Reservation){
         }
         if(expanded){
             Row (
-                modifier = Modifier.padding(start = 40.dp, bottom = 10.dp),
+                modifier = Modifier.padding(start = 50.dp, bottom = 10.dp),
                 horizontalArrangement = Arrangement.spacedBy(20.dp)
             ){
                 StyledIconButton(
                     {
-                        MyDbFactory
-                            .getMyDbInstance()
-                            .reservationDao()
-                            .delete(reservation)
-                        reservationList.remove(reservation)
+                        reservationState.value = "Disdetta"
+
+                        myDb.reservationDao()
+                            .updateReservation(
+                                reservation.id,
+                                "Disdetta"
+                            )
                     },
-                    "Cancella",
-                    Color.White,
-                    Color.Red,
-                    Icons.Outlined.Delete,
-                    "Delete reservation"
+                    "Disdici",
+                    iconVector = Icons.Outlined.Delete,
+                    iconDescription = "Cancel reservation"
                 )
                 StyledIconButton(
                     {
-                        //TODO archivia - effettuata
+                        reservationState.value = "Effettuata"
+                        myDb.reservationDao()
+                            .updateReservation(
+                                reservation.id,
+                                "Effettuata"
+                            )
                     },
                     "Effettuata",
-                    Color.White,
-                    Color.Green,
-                    Icons.Outlined.Done,
-                    "Mark as done"
+                    iconVector = Icons.Outlined.Done,
+                    iconDescription = "Mark as done"
                 )
             }
         }

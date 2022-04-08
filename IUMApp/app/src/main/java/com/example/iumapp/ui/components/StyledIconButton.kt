@@ -12,20 +12,17 @@ import androidx.compose.ui.graphics.vector.ImageVector
 fun StyledIconButton(
     onClickFun: () -> Unit,
     textString: String,
-    textColor: Color = Color.Unspecified,
-    backgroundColor: Color = MaterialTheme.colors.primary,
     iconVector: ImageVector,
     iconDescription: String
 ) {
     ExtendedFloatingActionButton(
+        backgroundColor = MaterialTheme.colors.primary,
         onClick = { onClickFun() },
         text = {
             Text(
                 text = textString,
-                color = textColor
             )
         },
-        backgroundColor = backgroundColor,
         icon = {
             Icon(
                 imageVector = iconVector,

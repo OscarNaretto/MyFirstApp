@@ -73,50 +73,16 @@ class MyDbImpl {
                 Teacher("Daniele Paolo Radicioni"),
                 Teacher("Claudio Schifanella"),
 
-
-                Teacher("Vivina Laura Barutello"),
-                Teacher("Alberto Boscaggin"),
-                Teacher("Gianluca Garello"),
-                Teacher("Joerg Seiler"),
-                Teacher("Stefano Vita"),
-
                 Teacher("Roberto Aringhieri"),
                 Teacher("Andrea Cesare Grosso"),
-
 
                 Teacher("Andrea Mori"),
 
                 Teacher("Luca Motto Ros"),
 
-                Teacher("Luca Roversi"),
-
                 Teacher("Ciro Cattuto"),
                 Teacher("Liliana Ardissono"),
 
-
-                Teacher("Ugo de' Liguoro"),
-                Teacher("Idilio Drago"),
-                Teacher("Andras Horvath"),
-                Teacher("Diego Magro"),
-                Teacher("Roberto Micalizio"),
-                Teacher("GianLuca Pozzato"),
-
-                Teacher("Ruggero Pensa"),
-                Teacher("Luca Anselma"),
-                Teacher("Noemi Mauro"),
-                Teacher("Fabiana Vernero"),
-
-                Teacher("Marco Pironti"),
-
-                Teacher("Camillo Sacchetto"),
-                Teacher("Fabio Montalcini"),
-
-                Teacher("Igor Pesando"),
-
-                Teacher("Luca Padovani"),
-                Teacher("Jeremy James Sproston"),
-
-                Teacher("Roberta Sirovich")
             )
         }
     }
@@ -124,20 +90,31 @@ class MyDbImpl {
     private fun populateLessonInitData(){
         if(myMyDb.lessonDao().getAll().isEmpty()) {
             lessonDao.insert(
-                Lesson(name = "Architetture degli Elaboratori"),
-                Lesson(name = "Analisi Matematica"),
-                Lesson(name = "Calcolo matriciale e ricerca operativa"),
-                Lesson(name = "Matematica discreta"),
-                Lesson(name = "Logica"),
-                Lesson(name = "Programmazione 1"),
-                Lesson(name = "Programmazione 2"),
-                Lesson(name = "Algoritmi e strutture dati"),
-                Lesson(name = "Basi di dati"),
-                Lesson(name = "Economia"),
-                Lesson(name = "Diritto"),
-                Lesson(name = "Fisica"),
-                Lesson(name = "Linguaggi formali e traduttori"),
-                Lesson(name = "Elementi di probabilità e statistica")
+                Lesson(
+                    name = "Architetture degli Elaboratori",
+                    description = "L’insegnamento ha lo scopo di introdurre i concetti e le tecniche fondamentali per l’analisi e la progettazione di algoritmi, che sono alla base dello sviluppo del software. Gli studenti acquisiranno conoscenze circa l’analisi di correttezza e complessità computazionale degli algoritmi, sulle strutture dati per la rappresentazione dell’informazione, sulle tecniche di problem-solving mediante lo sviluppo di algoritmi efficienti. L’insegnamento è supportato da un laboratorio che ne costituisce parte integrante, finalizzato alla realizzazione e sperimentazione degli algoritmi e delle strutture dati mediante un linguaggio imperativo ed uno object-oriented."
+                ),
+
+                Lesson(
+                    name = "Calcolo matriciale e ricerca operativa",
+                    description = "Il corso si propone di fornire agli studenti nozioni generali di calcolo matriciale, algebra e geometria, e nozioni più specifiche di ricerca operativa.\n" +
+                            "Il calcolo matriciale è uno strumento fondamentale per il calcolo scientifico. La ricerca operativa studia modelli e metodi, basati sulle tecniche introdotte, per l'utilizzo ottimale di risorse scarse (in ambiti produttivi, finanziari, ecc.)."
+                ),
+
+                Lesson(
+                    name = "Matematica discreta",
+                    description = "L’insegnamento si propone di fornire allo studente una introduzione alla matematica discreta, con particolare riguardo per gli aspetti più rilevanti per la formazione di base di un informatico, in particolare una adeguata familiarità con le strutture algebriche, il calcolo combinatorio e le principali tecniche di dimostrazione."
+                ),
+
+                Lesson(
+                    name = "Logica",
+                    description = "L’insegnamento si propone di fornire allo studente una introduzione alla logica matematica, con particolare riguardo per i suoi aspetti più rilevanti per la formazione di base di un informatico, in particolare una adeguata familiarità con le strutture algebriche e le principali tecniche di dimostrazione."
+                ),
+
+                Lesson(
+                    name = "Programmazione 2",
+                    description = "L’insegnamento ha l'obiettivo di approfondire concetti di informatica di base e in particolare di fornire una introduzione al paradigma di programmazione a oggetti. Si propone quindi di raffinare le capacità di programmare nel linguaggio Java apprese nel corso di Programmazione I e di introdurre le nozioni fondamentali della programmazione orientata agli oggetti. In particolare, il corso illustrerà le astrazioni fondamentali per la progettazione del software (classi e oggetti), la definizione di semplici strutture dati (liste, alberi, pile, code) e operazioni corrispondenti, i meccanismi di base per favorire riuso e modularità del software (ereditarietà, polimorfismo, tipi generici), la specifica degli invarianti di classe e gestione delle loro violazioni (asserzioni ed eccezioni), così come alcune classi fondamentali della libreria Java. Si darà particolare enfasi agli aspetti di buona progettazione del software, utilizzando concetti presi a prestito dall'ingegneria del software e formalismi grafici quali UML."
+                ),
             )
         }
     }
@@ -145,18 +122,13 @@ class MyDbImpl {
     private fun populateTeachingInitData(){
         if(myMyDb.teachingDao().getAll().isEmpty()) {
             teachingDao.insert(
+
                 Teaching("Architetture degli Elaboratori", "Idilio Drago"),
                 Teaching("Architetture degli Elaboratori", "Rossano Gaeta"),
                 Teaching("Architetture degli Elaboratori", "Michele Garetto"),
                 Teaching("Architetture degli Elaboratori", "Maurizio Lucenteforte"),
                 Teaching("Architetture degli Elaboratori", "Daniele Paolo Radicioni"),
                 Teaching("Architetture degli Elaboratori", "Claudio Schifanella"),
-
-                Teaching("Analisi Matematica", "Vivina Laura Barutello"),
-                Teaching("Analisi Matematica", "Alberto Boscaggin"),
-                Teaching("Analisi Matematica", "Gianluca Garello"),
-                Teaching("Analisi Matematica", "Joerg Seiler"),
-                Teaching("Analisi Matematica", "Stefano Vita"),
 
                 Teaching("Calcolo matriciale e ricerca operativa", "Roberto Aringhieri"),
                 Teaching("Calcolo matriciale e ricerca operativa", "Andrea Cesare Grosso"),
@@ -165,35 +137,9 @@ class MyDbImpl {
 
                 Teaching("Logica", "Luca Motto Ros"),
 
-                Teaching("Programmazione 1", "Luca Roversi"),
-
                 Teaching("Programmazione 2", "Ciro Cattuto"),
                 Teaching("Programmazione 2", "Liliana Ardissono"),
 
-
-                Teaching("Algoritmi e strutture dati", "Ugo de' Liguoro"),
-                Teaching("Algoritmi e strutture dati", "Idilio Drago"),
-                Teaching("Algoritmi e strutture dati", "Andras Horvath"),
-                Teaching("Algoritmi e strutture dati", "Diego Magro"),
-                Teaching("Algoritmi e strutture dati", "Roberto Micalizio"),
-                Teaching("Algoritmi e strutture dati", "GianLuca Pozzato"),
-
-                Teaching("Basi di dati", "Ruggero Pensa"),
-                Teaching("Basi di dati", "Luca Anselma"),
-                Teaching("Basi di dati", "Noemi Mauro"),
-                Teaching("Basi di dati", "Fabiana Vernero"),
-
-                Teaching("Economia", "Marco Pironti"),
-
-                Teaching("Diritto", "Camillo Sacchetto"),
-                Teaching("Diritto", "Fabio Montalcini"),
-
-                Teaching("Fisica", "Igor Pesando"),
-
-                Teaching("Linguaggi formali e traduttori", "Luca Padovani"),
-                Teaching("Linguaggi formali e traduttori", "Jeremy James Sproston"),
-
-                Teaching("Elementi di probabilità e statistica", "Roberta Sirovich")
                 )
         }
     }

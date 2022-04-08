@@ -46,7 +46,6 @@ lateinit var dayName: String
 var timeSlot by Delegates.notNull<Int>()
 lateinit var myDb: MyDb
 
-
 class TeacherChoice : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,13 +53,21 @@ class TeacherChoice : ComponentActivity() {
         lessonName = intent.getStringExtra("lesson").toString()
         userName = intent.getStringExtra("user").toString()
         dayName = intent.getStringExtra("day").toString()
-        timeSlot = intent.getIntExtra("time_slot", 1)
+        timeSlot = intent.getIntExtra("time_slot", 15)
         myDb = MyDbFactory.getMyDbInstance()
-
 
         setContent {
             SetContainer(lessonName, timeSlot)
         }
+    }
+}
+
+fun calculateTimeSlotString(): String {
+    return when(timeSlot){
+        15 -> "15:00 - 16:00"
+        16 -> "16:00 - 17:00"
+        17 -> "17:00 - 18:00"
+        else -> "18:00 - 19:00"
     }
 }
 
@@ -80,7 +87,7 @@ fun SetContainer(lessonName: String, timeSlot: Int){
 
     for (teacher in myDb
         .reservationDao()
-        .getUnavailableTeacher(lessonName, "Lunedì", timeSlot)
+        .getUnavailableTeacher(lessonName, dayName, timeSlot)
     ){
         teachers.remove(teacher)
     }
@@ -121,54 +128,55 @@ fun SetContainer(lessonName: String, timeSlot: Int){
                     } else {
                         "Nessun docente selezionato"
                     }, FontWeight.Medium)
-                }
-            }
 
-            Row (
-                modifier = Modifier.padding(start = 55.dp),
-                horizontalArrangement = Arrangement.spacedBy(20.dp)
-            ){
-                StyledIconButton(
-                    onClickFun = {
-                        shortToast(
-                            context,
-                            "Prenotazione annullata!"
+                    Row (
+                        modifier = Modifier.padding(start = 30.dp, bottom = 15.dp),
+                        horizontalArrangement = Arrangement.spacedBy(25.dp)
+                    ){
+                        StyledIconButton(
+                            onClickFun = {
+                                shortToast(
+                                    context,
+                                    "Prenotazione annullata!"
+                                )
+                                context.getActivity()?.finish()
+                            },
+                            textString = "Annulla",
+                            iconVector = Icons.Filled.Delete,
+                            iconDescription = "Delete reservation"
                         )
-                        context.getActivity()?.finish()
-                    },
-                    textString = "Annulla",
-                    iconVector = Icons.Filled.Delete,
-                    iconDescription = "Delete reservation"
-                )
 
-                StyledIconButton(
-                    onClickFun = {
-                        if (chosenTeacher.value != ""){
-                            myDb
-                                .reservationDao()
-                                .insert(Reservation(
-                                    lesson = lessonName,
-                                    teacher = chosenTeacher.value,
-                                    user = userName,
-                                    day = dayName,
-                                    time_slot = timeSlot
-                                ))
-                            shortToast(
-                                context,
-                                "Prenotazione salvata!"
-                            )
-                            context.getActivity()?.finish()
-                        } else {
-                            shortToast(
-                                context,
-                                "Nessun docente selezionato"
-                            )
-                        }
-                    },
-                    textString = "Conferma",
-                    iconVector = Icons.Filled.Done,
-                    iconDescription = "Save reservation"
-                )
+                        StyledIconButton(
+                            onClickFun = {
+                                if (chosenTeacher.value != ""){
+                                    myDb
+                                        .reservationDao()
+                                        .insert(Reservation(
+                                            lesson = lessonName,
+                                            teacher = chosenTeacher.value,
+                                            user = userName,
+                                            day = dayName,
+                                            time_slot = timeSlot,
+                                            status = "Attiva"
+                                        ))
+                                    shortToast(
+                                        context,
+                                        "Prenotazione salvata!"
+                                    )
+                                    context.getActivity()?.finish()
+                                } else {
+                                    shortToast(
+                                        context,
+                                        "Nessun docente selezionato"
+                                    )
+                                }
+                            },
+                            textString = "Conferma",
+                            iconVector = Icons.Filled.Done,
+                            iconDescription = "Save reservation"
+                        )
+                    }
+                }
             }
         }
     }
@@ -195,6 +203,7 @@ fun SetTeacherButton(teacherName: String, chosenTeacher: MutableState<String>){
 @Composable
 private fun CardContent(lessonName: String, timeSlot: Int) {
     var expanded by remember { mutableStateOf(false) }
+
     Row(
         modifier = Modifier
             .padding(12.dp)
@@ -211,15 +220,19 @@ private fun CardContent(lessonName: String, timeSlot: Int) {
                 .padding(4.dp)
         ) {
 
-            TitleText("Turno 15:00 - 16:00 --- $timeSlot",
+            TitleText(calculateTimeSlotString(),
                 FontWeight.Medium)
 
             TitleText(lessonName,
                 FontWeight.ExtraBold)
 
             if (expanded) {
-                BodyText("L’insegnamento ha lo scopo di introdurre i concetti e le tecniche fondamentali per l’analisi e la progettazione di algoritmi, che sono alla base dello sviluppo del software. Gli studenti acquisiranno conoscenze circa l’analisi di correttezza e complessità computazionale degli algoritmi, sulle strutture dati per la rappresentazione dell’informazione, sulle tecniche di problem-solving mediante lo sviluppo di algoritmi efficienti. L’insegnamento è supportato da un laboratorio che ne costituisce parte integrante, finalizzato alla realizzazione e sperimentazione degli algoritmi e delle strutture dati mediante un linguaggio imperativo ed uno object-oriented."
-                    , FontWeight.Bold)
+                BodyText(
+                    myDb
+                        .lessonDao()
+                        .getDescription(lessonName),
+                    FontWeight.Bold
+                )
             }
         }
         IconButton(onClick = { expanded = !expanded }) {

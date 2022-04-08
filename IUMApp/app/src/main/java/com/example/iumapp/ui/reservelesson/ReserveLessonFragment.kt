@@ -29,15 +29,18 @@ import com.example.iumapp.ui.components.MyClickableCard
 import com.example.iumapp.ui.components.StyledButton
 import com.example.iumapp.ui.components.TitleText
 import com.example.iumapp.ui.teacherchoice.TeacherChoice
+import com.example.iumapp.ui.teacherchoice.dayName
+import com.example.iumapp.ui.teacherchoice.timeSlot
+import kotlin.properties.Delegates
 
 class ReserveLessonFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private var lessonList = mutableListOf<String>()
+    private var daysList = listOf(0,0,0,0,0).toMutableStateList()
     lateinit var recyclerView: ComposeView
     lateinit var myDb: MyDb
     private var currentDay: String = "Lunedì"
-
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -66,13 +69,11 @@ class ReserveLessonFragment : Fragment() {
             }
         }
 
-        lessonList = myDb
-            .reservationDao()
-            .provideAvailableLessons(
-                myDb,
-                currentDay,
-                1
-            ).toMutableStateList()
+        lessonList = (listMapper(15)
+                + listMapper(16)
+                + listMapper(17)
+                + listMapper(18))
+            .toMutableStateList()
 
         daysScroller.setContent {
             ComposeScrollerSet()
@@ -87,13 +88,11 @@ class ReserveLessonFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        lessonList = myDb
-            .reservationDao()
-            .provideAvailableLessons(
-                myDb,
-                currentDay,
-                1
-            ).toMutableStateList()
+        lessonList = (listMapper(15)
+                + listMapper(16)
+                + listMapper(17)
+                + listMapper(18))
+            .toMutableStateList()
 
         recyclerView.setContent {
             SetLessonList(lessonList as SnapshotStateList<String>)
@@ -103,6 +102,38 @@ class ReserveLessonFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun listMapper(timeSlot: Int): List<String>{
+        return myDb
+            .reservationDao()
+            .provideAvailableLessons(
+                myDb,
+                currentDay,
+                timeSlot
+            ).map {
+                when(timeSlot){
+                    15 -> "15:00 - 16:00\n$it"
+                    16 -> "16:00 - 17:00\n$it"
+                    17 -> "17:00 - 18:00\n$it"
+                    else -> "18:00 - 19:00\n$it"
+                }
+            }
+    }
+
+    private fun daysButtonMapper(bName: String): Int{
+        return when (bName){
+            "Lunedì" -> 0
+            "Martedì"-> 1
+            "Mercoledì"-> 2
+            "Giovedì"-> 3
+            else -> 4
+        }
+    }
+
+    private fun setDayButtonClicked(dayIndex: Int){
+        daysList= listOf(0,0,0,0,0).toMutableStateList()
+        daysList[dayIndex] = 1
     }
 
     @Composable
@@ -124,23 +155,26 @@ class ReserveLessonFragment : Fragment() {
     @Composable
     fun ProvideButton(dayName: String) {
         StyledButton(
-            { dayButtonOnClick(dayName) },
-            dayName.capitalize()
+            onClickFun = {
+                setDayButtonClicked(daysButtonMapper(dayName))
+                dayButtonOnClick(dayName)
+        },
+            textString = dayName.capitalize(),
+            backgroundColor = if(daysList[daysButtonMapper(dayName)] == 0){
+                MaterialTheme.colors.primary
+            } else {
+                MaterialTheme.colors.secondary
+            }
         )
-
     }
 
     private fun dayButtonOnClick(dayName: String){
         currentDay = dayName
         lessonList.clear()
-        lessonList.addAll(myDb
-            .reservationDao()
-            .provideAvailableLessons(
-                myDb,
-                dayName,
-                1
-            )
-        )
+        lessonList.addAll(listMapper(15)
+                + listMapper(16)
+                + listMapper(17)
+                + listMapper(18))
     }
 
     @Composable
@@ -170,12 +204,19 @@ class ReserveLessonFragment : Fragment() {
     }
 
     private fun launchTeacherChoiceFragment(lessonName: String){
+        val timeSlotChosen = when (lessonName.subSequence(0, 14) as String){
+            "15:00 - 16:00\n" -> 15
+            "16:00 - 17:00\n" -> 16
+            "17:00 - 18:00\n" -> 17
+            else -> 18
+        }
+
         startActivity(
             Intent(activity as MainActivity, TeacherChoice::class.java)
-                .putExtra("lesson", lessonName)
+                .putExtra("lesson", lessonName.substring(14))
                 .putExtra("user", (activity as MainActivity).getUserType())
                 .putExtra("day", currentDay)
-                .putExtra("time_slot", 1)
+                .putExtra("time_slot", timeSlotChosen)
         )
     }
 }

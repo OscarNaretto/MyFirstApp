@@ -16,6 +16,9 @@ interface LessonDao {
     @Query("SELECT name FROM lesson")
     fun getAll(): List<String>
 
+    @Query("SELECT description FROM lesson WHERE name = :lessonName")
+    fun getDescription(lessonName: String): String
+
     @Query("DELETE FROM lesson")
     fun nukeTable();
 }

@@ -1,9 +1,6 @@
 package com.example.iumapp.database.reservation
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
+import androidx.room.*
 import com.example.iumapp.database.MyDb
 import com.example.iumapp.database.MyDbFactory
 
@@ -21,13 +18,16 @@ interface ReservationDao {
     @Query("DELETE FROM reservation")
     fun nukeTable();
 
-    @Query("SELECT teacher FROM reservation WHERE lesson = :lessonName AND day = :dayName AND time_slot = :time_slotVal")
+    @Query("SELECT teacher FROM reservation WHERE lesson = :lessonName AND day = :dayName AND time_slot = :time_slotVal AND status = 'Attiva'")
     fun getUnavailableTeacher(lessonName: String,
                               dayName: String,
                               time_slotVal: Int): List<String>
 
     @Query("SELECT * FROM reservation WHERE user = :userName")
     fun provideReservationByUser(userName: String): List<Reservation>
+
+    @Query("UPDATE reservation SET status = :newStatus WHERE id = :oldId")
+    fun updateReservation(oldId: Int, newStatus: String)
 
     fun provideAvailableLessons(myDb: MyDb,
                                 day: String,

@@ -10,5 +10,6 @@ data class Reservation(
     val teacher: String,
     val user: String,
     val day: String,
-    val time_slot: Int
+    val time_slot: Int,
+    val status: String //Effettuata, Attiva, Disdetta
 )

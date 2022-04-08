@@ -34,6 +34,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.iumapp.R
 import com.example.iumapp.database.MyDbFactory
+import com.example.iumapp.ui.components.BodyText
+import com.example.iumapp.ui.components.MyCard
 
 class CatalogueFragment : Fragment() {
 
@@ -63,11 +65,7 @@ class CatalogueFragment : Fragment() {
 
     @Composable
     private fun SetLessonItem(name: String) {
-        Card(
-            backgroundColor = MaterialTheme.colors.primary,
-            modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp),
-            shape = RoundedCornerShape(30.dp),
-        ) {
+        MyCard {
             CardContent(name)
         }
     }
@@ -80,7 +78,7 @@ class CatalogueFragment : Fragment() {
                 .padding(12.dp)
                 .animateContentSize(
                     animationSpec = spring(
-                        dampingRatio = Spring.DampingRatioMediumBouncy,
+                        dampingRatio = Spring.DampingRatioLowBouncy,
                         stiffness = Spring.StiffnessLow
                     )
                 )
@@ -98,8 +96,16 @@ class CatalogueFragment : Fragment() {
 
                 )
                 if (expanded) {
-                    Text(
-                        text = MyDbFactory
+                    BodyText(
+                        textVal = MyDbFactory
+                            .getMyDbInstance()
+                            .lessonDao()
+                            .getDescription(name),
+                        fontWeight = FontWeight.ExtraBold
+                    )
+
+                    BodyText(
+                        textVal = "Docenti:" + MyDbFactory
                             .getMyDbInstance()
                             .teachingDao()
                             .getTeacherByLesson(name)
@@ -107,10 +113,7 @@ class CatalogueFragment : Fragment() {
                             .toString()
                             .replace("[", "")
                             .replace("]", ""),
-                        style = MaterialTheme.typography.body2.copy(
-                            fontWeight = FontWeight.Bold
-                        )
-
+                        fontWeight = FontWeight.Bold
                     )
                 }
             }
