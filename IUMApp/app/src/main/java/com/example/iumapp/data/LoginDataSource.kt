@@ -13,7 +13,7 @@ class LoginDataSource {
         try {
             val myDb = MyDbFactory.getMyDbInstance()
 
-            if(myDb.studentDao().searchValidLoginUser(username, password) != username) {
+            if(myDb.userDao().searchValidLoginUser(username, password) != username) {
                 throw IOException("Error logging in")
             }
 

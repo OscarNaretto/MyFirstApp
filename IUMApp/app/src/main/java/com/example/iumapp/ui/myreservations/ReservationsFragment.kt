@@ -1,5 +1,6 @@
 package com.example.iumapp.ui.myreservations
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -40,13 +41,12 @@ import com.example.iumapp.ui.components.MyCard
 import com.example.iumapp.ui.components.StyledIconButton
 import com.example.iumapp.ui.components.TitleText
 import com.example.iumapp.ui.login.LoginActivity
-import com.example.iumapp.ui.teacherchoice.TeacherChoice
 import com.example.iumapp.ui.teacherchoice.getActivity
 import com.example.iumapp.ui.teacherchoice.myDb
-import java.security.AccessController.getContext
 
 private lateinit var userType: String
 private var reservationList = mutableListOf<Reservation>()
+@SuppressLint("StaticFieldLeak")
 lateinit var saveContext: Context
 
 class ReservationsFragment : Fragment() {
@@ -63,7 +63,7 @@ class ReservationsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val dashboardViewModel =
-            ViewModelProvider(this).get(ReservationsViewModel::class.java)
+            ViewModelProvider(this)[ReservationsViewModel::class.java]
 
         _binding = FragmentReservationsBinding.inflate(inflater, container, false)
         val root: View = binding.root

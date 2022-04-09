@@ -20,5 +20,5 @@ interface LessonDao {
     fun getDescription(lessonName: String): String
 
     @Query("DELETE FROM lesson")
-    fun nukeTable();
+    fun nukeTable()
 }

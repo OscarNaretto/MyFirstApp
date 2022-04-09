@@ -7,17 +7,9 @@
     tools:context=".ui.reservelesson.ReserveLessonFragment">
 
     <androidx.compose.ui.platform.ComposeView
-        android:id="@+id/days_scroll"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:ignore="MissingConstraints">
-
-    </androidx.compose.ui.platform.ComposeView>
-
-    <androidx.compose.ui.platform.ComposeView
         android:id="@+id/lesson_list"
         android:layout_width="match_parent"
-        android:layout_height="580dp"
+        android:layout_height="match_parent"
         android:layout_marginBottom="56dp"
         android:scrollbars="vertical"
         android:visibility="gone"
@@ -25,7 +17,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/days_scroll" />
+        app:layout_constraintTop_toBottomOf="parent" />
 
     <TextView
         android:id="@+id/text_home"

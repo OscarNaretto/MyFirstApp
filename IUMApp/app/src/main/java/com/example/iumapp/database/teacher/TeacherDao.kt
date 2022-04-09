@@ -17,5 +17,5 @@ interface TeacherDao {
     fun getAll(): List<Teacher>
 
     @Query("DELETE FROM teacher")
-    fun nukeTable();
+    fun nukeTable()
 }

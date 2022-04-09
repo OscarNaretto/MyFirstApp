@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -29,15 +30,13 @@ import com.example.iumapp.ui.components.MyClickableCard
 import com.example.iumapp.ui.components.StyledButton
 import com.example.iumapp.ui.components.TitleText
 import com.example.iumapp.ui.teacherchoice.TeacherChoice
-import com.example.iumapp.ui.teacherchoice.dayName
-import com.example.iumapp.ui.teacherchoice.timeSlot
-import kotlin.properties.Delegates
+import java.util.*
 
 class ReserveLessonFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private var lessonList = mutableListOf<String>()
-    private var daysList = listOf(0,0,0,0,0).toMutableStateList()
+    private var daysList = mutableListOf<Int>()
     lateinit var recyclerView: ComposeView
     lateinit var myDb: MyDb
     private var currentDay: String = "Lunedì"
@@ -57,12 +56,10 @@ class ReserveLessonFragment : Fragment() {
         val root: View = binding.root
         recyclerView = binding.lessonList
         val textView: TextView = binding.textHome
-        val daysScroller = binding.daysScroll
         myDb = MyDbFactory.getMyDbInstance()
 
         homeViewModel.text.observe(viewLifecycleOwner) {
             if ((activity as MainActivity).getUserType() == "guest") {
-                binding.daysScroll.visibility = View.GONE
                 textView.visibility = View.VISIBLE
             } else {
                 recyclerView.visibility = View.VISIBLE
@@ -75,12 +72,10 @@ class ReserveLessonFragment : Fragment() {
                 + listMapper(18))
             .toMutableStateList()
 
-        daysScroller.setContent {
-            ComposeScrollerSet()
-        }
+        daysList = listOf(0,0,0,0,0).toMutableStateList()
 
         recyclerView.setContent {
-            SetLessonList(lessonList as SnapshotStateList<String>)
+            SetComposableView(lessonList as SnapshotStateList<String>)
         }
 
         return root
@@ -95,7 +90,7 @@ class ReserveLessonFragment : Fragment() {
             .toMutableStateList()
 
         recyclerView.setContent {
-            SetLessonList(lessonList as SnapshotStateList<String>)
+            SetComposableView(lessonList as SnapshotStateList<String>)
         }
     }
 
@@ -137,34 +132,32 @@ class ReserveLessonFragment : Fragment() {
     }
 
     @Composable
-    private fun ComposeScrollerSet() {
+    private fun ComposeScrollerSet(chosenDay: MutableState<String>) {
         val state = rememberScrollState()
         Row(
             modifier = Modifier
                 .horizontalScroll(state)
-                .padding(vertical = 20.dp, horizontal = 8.dp),
+                .padding(horizontal = 8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             for (day in listOf("Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì")) {
-                ProvideButton(dayName = day)
+                ProvideButton(day, chosenDay)
                 Spacer(modifier = Modifier.size(10.dp))
             }
         }
     }
 
     @Composable
-    fun ProvideButton(dayName: String) {
+    fun ProvideButton(dayName: String, chosenDay: MutableState<String>) {
         StyledButton(
             onClickFun = {
+                chosenDay.value = dayName
                 setDayButtonClicked(daysButtonMapper(dayName))
                 dayButtonOnClick(dayName)
         },
-            textString = dayName.capitalize(),
-            backgroundColor = if(daysList[daysButtonMapper(dayName)] == 0){
-                MaterialTheme.colors.primary
-            } else {
-                MaterialTheme.colors.secondary
-            }
+            //.capitalize() deprecated, if construct used instead
+            textString = dayName.replaceFirstChar
+            { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() },
         )
     }
 
@@ -178,14 +171,35 @@ class ReserveLessonFragment : Fragment() {
     }
 
     @Composable
-    fun SetLessonList(lessons: SnapshotStateList<String>) {
-        LazyColumn(modifier = Modifier.padding(vertical = 6.dp)) {
-            items(items = lessons) { lessons ->
-                SetLessonItem(lessonName = lessons)
+    fun SetComposableView(lessons: SnapshotStateList<String>) {
+        val chosenDay = remember { mutableStateOf(currentDay)}
+
+        Column(
+            Modifier.padding(top = 20.dp),
+            verticalArrangement = Arrangement.spacedBy(15.dp)
+        ){
+            ComposeScrollerSet(chosenDay)
+
+            Text(
+                modifier = Modifier.padding(top = 5.dp).align(alignment = Alignment.CenterHorizontally),
+                textAlign = TextAlign.Center,
+                text = chosenDay.value,
+                style = MaterialTheme.typography.h5.copy(
+                    fontWeight = FontWeight.ExtraBold
+                ),
+                color = MaterialTheme.colors.primary
+            )
+            LazyColumn(modifier = Modifier.padding(vertical = 6.dp)) {
+                items(items = lessons) { lessons ->
+                    SetLessonItem(lessonName = lessons)
+                }
             }
+
         }
+
     }
 
+    @Suppress("OPT_IN_IS_NOT_ENABLED")
     @OptIn(ExperimentalMaterialApi::class)
     @Composable
     private fun SetLessonItem(lessonName: String) {

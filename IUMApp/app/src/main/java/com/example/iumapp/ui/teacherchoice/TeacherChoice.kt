@@ -23,7 +23,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.iumapp.R
 import com.example.iumapp.database.MyDb
@@ -34,11 +33,6 @@ import com.example.iumapp.ui.components.MyCard
 import com.example.iumapp.ui.components.StyledIconButton
 import com.example.iumapp.ui.components.TitleText
 import kotlin.properties.Delegates
-
-//TODO
-// lesson description in relations !! (TBD)
-// pass correct arguments for Reservation
-// extract verbose code (onClicks for example) for better readability
 
 lateinit var lessonName: String
 lateinit var userName: String
@@ -57,7 +51,7 @@ class TeacherChoice : ComponentActivity() {
         myDb = MyDbFactory.getMyDbInstance()
 
         setContent {
-            SetContainer(lessonName, timeSlot)
+            SetContainer(lessonName)
         }
     }
 }
@@ -78,7 +72,7 @@ fun Context.getActivity(): ComponentActivity? = when (this) {
 }
 
 @Composable
-fun SetContainer(lessonName: String, timeSlot: Int){
+fun SetContainer(lessonName: String){
     val context = LocalContext.current
     val teachers = myDb
         .teachingDao()
@@ -113,7 +107,7 @@ fun SetContainer(lessonName: String, timeSlot: Int){
             MyCard(
                 backgroundColor = Color.White
             ) {
-                CardContent(lessonName = lessonName, timeSlot)
+                CardContent(lessonName = lessonName)
             }
 
             MyCard(
@@ -201,7 +195,7 @@ fun SetTeacherButton(teacherName: String, chosenTeacher: MutableState<String>){
 }
 
 @Composable
-private fun CardContent(lessonName: String, timeSlot: Int) {
+private fun CardContent(lessonName: String) {
     var expanded by remember { mutableStateOf(false) }
 
     Row(
@@ -262,10 +256,4 @@ fun ComposeScrollerSet(teachers: List<String>, chosenTeacher: MutableState<Strin
             Spacer(modifier = Modifier.size(10.dp))
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    SetContainer("Algoritmi e strutture dati", 1)
 }

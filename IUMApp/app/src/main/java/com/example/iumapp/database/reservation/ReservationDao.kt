@@ -16,7 +16,7 @@ interface ReservationDao {
     fun getAll(): List<Reservation>
 
     @Query("DELETE FROM reservation")
-    fun nukeTable();
+    fun nukeTable()
 
     @Query("SELECT teacher FROM reservation WHERE lesson = :lessonName AND day = :dayName AND time_slot = :time_slotVal AND status = 'Attiva'")
     fun getUnavailableTeacher(lessonName: String,

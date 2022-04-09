@@ -9,6 +9,10 @@
         <entry key="app/src/main/res/drawable/ic_home_black_24dp.xml" value="0.3025" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.3025" />
         <entry key="app/src/main/res/drawable/ic_launcher_foreground.xml" value="0.3025" />
+        <entry key="app/src/main/res/drawable/ic_launcher_foreground_BAK.xml" value="0.177" />
+        <entry key="app/src/main/res/drawable/ic_notebook_heart.xml" value="0.177" />
+        <entry key="app/src/main/res/drawable/ic_notebook_heart_colo.xml" value="0.177" />
+        <entry key="app/src/main/res/drawable/ic_notebook_heart_final.xml" value="0.177" />
         <entry key="app/src/main/res/drawable/ic_notifications_black_24dp.xml" value="0.3025" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.15070921985815602" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />
@@ -27,6 +31,7 @@
         <entry key="app/src/main/res/menu/basic_menu.xml" value="0.15520833333333334" />
         <entry key="app/src/main/res/menu/bottom_nav_menu.xml" value="0.1" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.1645" />
+        <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher_ready.xml" value="0.177" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.1645" />
       </map>
     </option>

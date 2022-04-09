@@ -3,8 +3,6 @@ package com.example.iumapp.ui.reservelesson
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.iumapp.database.MyDbFactory
-import com.example.iumapp.database.lesson.Lesson
 
 class ReserveLessonViewModel : ViewModel() {
     private val _text = MutableLiveData<String>().apply {
