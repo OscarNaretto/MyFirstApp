@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
@@ -111,8 +112,7 @@ fun ComposeReservationsList(reservationList: SnapshotStateList<Reservation>) {
     ) {
         Row(
             modifier = Modifier.padding(vertical = 8.dp),
-            horizontalArrangement = Arrangement.spacedBy(40.dp)
-
+            horizontalArrangement = Arrangement.spacedBy(60.dp)
         ){
             TitleText(
                 textVal = "Benvenuto \n$userType",
@@ -120,7 +120,7 @@ fun ComposeReservationsList(reservationList: SnapshotStateList<Reservation>) {
             )
 
             ExtendedFloatingActionButton(
-                modifier = Modifier.padding(vertical = 12.dp, horizontal = 8.dp),
+                modifier = Modifier.padding(vertical = 14.dp, horizontal = 8.dp),
                 onClick = {
                     startActivity(
                         saveContext,
@@ -220,13 +220,7 @@ fun CardContent(reservation: Reservation){
             ){
                 StyledIconButton(
                     {
-                        reservationState.value = "Disdetta"
-
-                        myDb.reservationDao()
-                            .updateReservation(
-                                reservation.id,
-                                "Disdetta"
-                            )
+                        onClickActionButton(reservationState, reservation, "Disdetta")
                     },
                     "Disdici",
                     iconVector = Icons.Outlined.Delete,
@@ -234,12 +228,7 @@ fun CardContent(reservation: Reservation){
                 )
                 StyledIconButton(
                     {
-                        reservationState.value = "Effettuata"
-                        myDb.reservationDao()
-                            .updateReservation(
-                                reservation.id,
-                                "Effettuata"
-                            )
+                        onClickActionButton(reservationState, reservation, "Effettuata")
                     },
                     "Effettuata",
                     iconVector = Icons.Outlined.Done,
@@ -248,4 +237,25 @@ fun CardContent(reservation: Reservation){
             }
         }
     }
+}
+
+fun onClickActionButton(reservationState: MutableState<String>, reservation: Reservation, actionVal: String) {
+    if (reservationState.value != "Attiva"){
+        changeStatusError()
+    } else {
+        reservationState.value = actionVal
+        myDb.reservationDao()
+            .updateReservation(
+                reservation.id,
+                actionVal
+            )
+    }
+}
+
+fun changeStatusError(){
+    Toast.makeText(
+        saveContext,
+        "Impossibile cambiare lo stato: prenotazione non attiva",
+        Toast.LENGTH_SHORT
+    ).show()
 }
