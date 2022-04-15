@@ -9,16 +9,13 @@ import androidx.activity.compose.setContent
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -28,10 +25,7 @@ import com.example.iumapp.R
 import com.example.iumapp.database.MyDb
 import com.example.iumapp.database.MyDbFactory
 import com.example.iumapp.database.reservation.Reservation
-import com.example.iumapp.ui.components.BodyText
-import com.example.iumapp.ui.components.MyCard
-import com.example.iumapp.ui.components.StyledIconButton
-import com.example.iumapp.ui.components.TitleText
+import com.example.iumapp.ui.components.*
 import kotlin.properties.Delegates
 
 lateinit var lessonName: String
@@ -86,7 +80,7 @@ fun SetContainer(lessonName: String){
         teachers.remove(teacher)
     }
 
-    val chosenTeacher = remember { mutableStateOf("")}
+    val chosenTeacher = remember { mutableStateOf(teachers[0])}
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -114,15 +108,13 @@ fun SetContainer(lessonName: String){
                 backgroundColor = Color.White
             ) {
                 Column(
-                    modifier = Modifier.padding(start = 16.dp, end = 16.dp)
+                    modifier = Modifier.padding(start = 16.dp, end = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(20.dp)
                 ) {
-                    ComposeScrollerSet(teachers = teachers, chosenTeacher = chosenTeacher)
-                    TitleText(if (chosenTeacher.value != ""){
-                        "Docente selezionato: \n${chosenTeacher.value}"
-                    } else {
-                        "Nessun docente selezionato"
-                    }, FontWeight.Medium)
-
+                    MyClickableBoxRow(
+                        chips = teachers,
+                        current = chosenTeacher
+                    )
                     Row (
                         modifier = Modifier.padding(start = 30.dp, bottom = 15.dp),
                         horizontalArrangement = Arrangement.spacedBy(25.dp)
@@ -142,28 +134,21 @@ fun SetContainer(lessonName: String){
 
                         StyledIconButton(
                             onClickFun = {
-                                if (chosenTeacher.value != ""){
-                                    myDb
-                                        .reservationDao()
-                                        .insert(Reservation(
-                                            lesson = lessonName,
-                                            teacher = chosenTeacher.value,
-                                            user = userName,
-                                            day = dayName,
-                                            time_slot = timeSlot,
-                                            status = "Attiva"
-                                        ))
-                                    shortToast(
-                                        context,
-                                        "Prenotazione salvata!"
-                                    )
-                                    context.getActivity()?.finish()
-                                } else {
-                                    shortToast(
-                                        context,
-                                        "Nessun docente selezionato"
-                                    )
-                                }
+                                myDb
+                                    .reservationDao()
+                                    .insert(Reservation(
+                                        lesson = lessonName,
+                                        teacher = chosenTeacher.value,
+                                        user = userName,
+                                        day = dayName,
+                                        time_slot = timeSlot,
+                                        status = "Attiva"
+                                    ))
+                                shortToast(
+                                    context,
+                                    "Prenotazione salvata!"
+                                )
+                                context.getActivity()?.finish()
                             },
                             textString = "Conferma",
                             iconVector = Icons.Filled.Done,
@@ -182,16 +167,6 @@ fun shortToast(context: Context, text: String){
         text,
         Toast.LENGTH_SHORT
     ).show()
-}
-
-@Composable
-fun SetTeacherButton(teacherName: String, chosenTeacher: MutableState<String>){
-    Button(
-        onClick = { chosenTeacher.value = teacherName },
-        shape = MaterialTheme.shapes.small.copy(CornerSize(percent = 50))
-    ) {
-        Text(text = teacherName)
-    }
 }
 
 @Composable
@@ -238,22 +213,6 @@ private fun CardContent(lessonName: String) {
                     stringResource(R.string.show_more)
                 }
             )
-        }
-    }
-}
-
-@Composable
-fun ComposeScrollerSet(teachers: List<String>, chosenTeacher: MutableState<String>) {
-    val state = rememberScrollState()
-    Row(
-        modifier = Modifier
-            .horizontalScroll(state)
-            .padding(vertical = 20.dp, horizontal = 10.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        for (teacher in teachers) {
-            SetTeacherButton(teacherName = teacher, chosenTeacher = chosenTeacher)
-            Spacer(modifier = Modifier.size(10.dp))
         }
     }
 }
