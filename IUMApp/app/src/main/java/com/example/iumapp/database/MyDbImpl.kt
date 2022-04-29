@@ -50,6 +50,6 @@ class MyDbImpl {
         teacherDao.nukeTable()
         lessonDao.nukeTable()
         teachingDao.nukeTable()
-        reservationDao.nukeTable()
+        //reservationDao.nukeTable()
     }
 }
